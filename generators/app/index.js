@@ -9,7 +9,8 @@ module.exports = yeoman.generators.Base.extend({
 
     // Have Yeoman greet the user.
     this.log(yosay(
-      'Welcome to the amazing ' + chalk.red('FlaskApi') + ' generator!'
+      'Welcome to the most cromulent ' + chalk.red('Flask REST API') +
+        ' generator!'
     ));
 
     var prompts = [{
