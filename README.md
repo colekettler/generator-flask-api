@@ -1,6 +1,6 @@
 # generator-flask-api [![Build Status](https://secure.travis-ci.org/ColeKettler/generator-flask-api.png?branch=master)](https://travis-ci.org/ColeKettler/generator-flask-api)
 
-> [Yeoman](http://yeoman.io) generator
+> [Yeoman](http://yeoman.io) generator for RESTful Flask APIs
 
 
 ## Getting Started
