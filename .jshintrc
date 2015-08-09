@@ -1,5 +1,6 @@
 {
   "node": true,
+  "mocha": true,
   "esnext": true,
   "bitwise": true,
   "camelcase": true,
