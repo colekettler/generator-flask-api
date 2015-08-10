@@ -15,10 +15,8 @@ describe('flask api:app', function () {
 
   it('creates files', function () {
     assert.file([
-      'bower.json',
-      'package.json',
+      'requirements.txt',
       '.editorconfig',
-      '.jshintrc'
     ]);
   });
 });
