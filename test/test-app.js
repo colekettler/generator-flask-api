@@ -23,4 +23,11 @@ describe('flask api:app', function () {
       '.editorconfig'
     ]);
   });
+
+  it('creates Python-specific project files', function () {
+    assert.fileContent([
+      ['.gitignore', /__pycache__\//],
+      ['.editorconfig', /\[\*\.py\]/]
+    ]);
+  });
 });
