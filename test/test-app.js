@@ -47,4 +47,11 @@ describe('flask api:app', function () {
       ['config.py', /TestingConfig/]
     ]);
   });
+
+  it('creates an executable run script', function () {
+    assert.fileContent([
+      ['run.py', /app\.run\(\)/],
+      ['run.py', /#! \/usr\/bin\/env python/]
+    ]);
+  });
 });
