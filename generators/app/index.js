@@ -67,6 +67,34 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('run.py'),
         this.destinationPath('run.py')
       );
+    },
+
+    app: function () {
+      this.fs.copy(
+        this.templatePath('app_init.py'),
+        this.destinationPath('app/__init__.py')
+      );
+    },
+
+    api: function () {
+      this.fs.copy(
+        this.templatePath('api_init.py'),
+        this.destinationPath('app/api/__init__.py')
+      );
+    },
+
+    models: function () {
+      this.fs.copy(
+        this.templatePath('models_init.py'),
+        this.destinationPath('app/models/__init__.py')
+      );
+    },
+
+    schemas: function () {
+      this.fs.copy(
+        this.templatePath('schemas_init.py'),
+        this.destinationPath('app/schemas/__init__.py')
+      );
     }
   },
 

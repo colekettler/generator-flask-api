@@ -24,6 +24,15 @@ describe('flask api:app', function () {
     ]);
   });
 
+  it('creates expected package structure', function () {
+    assert.file([
+      'app/__init__.py',
+      'app/api/__init__.py',
+      'app/models/__init__.py',
+      'app/schemas/__init__.py'
+    ]);
+  });
+
   it('creates Python-specific project files', function () {
     assert.fileContent([
       ['.gitignore', /__pycache__\//],
