@@ -29,17 +29,43 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   writing: {
-    app: function () {
+    git: function () {
+      this.fs.copy(
+        this.templatePath('gitignore'),
+        this.destinationPath('.gitignore')
+      );
+
+      this.fs.copy(
+        this.templatePath('gitattributes'),
+        this.destinationPath('.gitattributes')
+      );
+    },
+
+    editorConfig: function () {
+      this.fs.copy(
+        this.templatePath('editorconfig'),
+        this.destinationPath('.editorconfig')
+      );
+    },
+
+    pip: function () {
       this.fs.copy(
         this.templatePath('requirements.txt'),
         this.destinationPath('requirements.txt')
       );
     },
 
-    projectfiles: function () {
+    config: function () {
       this.fs.copy(
-        this.templatePath('editorconfig'),
-        this.destinationPath('.editorconfig')
+        this.templatePath('config.py'),
+        this.destinationPath('config.py')
+      );
+    },
+
+    runnable: function () {
+      this.fs.copy(
+        this.templatePath('run.py'),
+        this.destinationPath('run.py')
       );
     }
   },

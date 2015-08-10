@@ -13,10 +13,14 @@ describe('flask api:app', function () {
       .on('end', done);
   });
 
-  it('creates files', function () {
+  it('creates expected files', function () {
     assert.file([
+      'config.py',
+      'run.py',
       'requirements.txt',
-      '.editorconfig',
+      '.gitattributes',
+      '.gitignore',
+      '.editorconfig'
     ]);
   });
 });
