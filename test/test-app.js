@@ -39,4 +39,12 @@ describe('flask api:app', function () {
       ['.editorconfig', /\[\*\.py\]/]
     ]);
   });
+
+  it('sets default configs', function () {
+    assert.fileContent([
+      ['config.py', /ProductionConfig/],
+      ['config.py', /DevelopmentConfig/],
+      ['config.py', /TestingConfig/]
+    ]);
+  });
 });
