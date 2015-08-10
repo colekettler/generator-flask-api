@@ -15,12 +15,12 @@ describe('flask api:app', function () {
 
   it('creates expected files', function () {
     assert.file([
-      'config.py',
-      'run.py',
-      'requirements.txt',
       '.gitattributes',
       '.gitignore',
-      '.editorconfig'
+      '.editorconfig',
+      'config.py',
+      'run.py',
+      'requirements.txt'
     ]);
   });
 
@@ -40,7 +40,14 @@ describe('flask api:app', function () {
     ]);
   });
 
-  it('sets default configs', function () {
+  it('creates an executable run script', function () {
+    assert.fileContent([
+      ['run.py', /app\.run\(\)/],
+      ['run.py', /#! \/usr\/bin\/env python/]
+    ]);
+  });
+
+  it('sets base configs', function () {
     assert.fileContent([
       ['config.py', /ProductionConfig/],
       ['config.py', /DevelopmentConfig/],
@@ -48,10 +55,10 @@ describe('flask api:app', function () {
     ]);
   });
 
-  it('creates an executable run script', function () {
+  it('defaults to production config', function () {
     assert.fileContent([
-      ['run.py', /app\.run\(\)/],
-      ['run.py', /#! \/usr\/bin\/env python/]
+      ['config.py', /'default': ProductionConfig/],
+      ['run.py', /default/]
     ]);
   });
 });
