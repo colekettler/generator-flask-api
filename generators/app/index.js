@@ -28,7 +28,7 @@ module.exports = yeoman.generators.Base.extend({
     }.bind(this));
   },
 
-  writing: {
+  configuring: {
     git: function () {
       this.fs.copy(
         this.templatePath('gitignore'),
@@ -46,9 +46,11 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('editorconfig'),
         this.destinationPath('.editorconfig')
       );
-    },
+    }
+  },
 
-    pip: function () {
+  writing: {
+    requirements: function () {
       this.fs.copy(
         this.templatePath('requirements.txt'),
         this.destinationPath('requirements.txt')
