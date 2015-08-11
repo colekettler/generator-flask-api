@@ -1,4 +1,5 @@
 'use strict';
+
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
@@ -101,6 +102,19 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   install: function () {
-    //this.installDependencies();
+    if (!this.options['skip-install']) {
+      // Python dependencies.
+      this.spawnCommandSync('pip', ['install', 'marshmallow', '--pre']);
+      this.spawnCommandSync('pip', ['install', 'flask-marshmallow']);
+      this.spawnCommandSync('pip', ['install', 'flask-sqlalchemy',
+                                    'marshmallow-sqlalchemy']);
+
+      // Requirements file.
+      var pipFreeze = this.spawnCommandSync('pip', ['freeze'], { stdio: 'pipe' });
+      this.fs.write(
+        this.destinationPath('requirements.txt'),
+        pipFreeze.stdout
+      );
+    }
   }
 });
