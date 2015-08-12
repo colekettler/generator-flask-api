@@ -60,4 +60,11 @@ describe('flask api:app', function () {
       ['run.py', /default/]
     ]);
   });
+
+  it('uses blueprints', function () {
+    assert.fileContent([
+      ['app/__init__.py', /register_blueprint/],
+      ['app/api/__init__.py', /Blueprint/]
+    ]);
+  });
 });
