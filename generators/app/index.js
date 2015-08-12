@@ -51,13 +51,6 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   writing: {
-    requirements: function () {
-      this.fs.copy(
-        this.templatePath('requirements.txt'),
-        this.destinationPath('requirements.txt')
-      );
-    },
-
     config: function () {
       this.fs.copy(
         this.templatePath('config.py'),

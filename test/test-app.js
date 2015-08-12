@@ -19,8 +19,7 @@ describe('flask api:app', function () {
       '.gitignore',
       '.editorconfig',
       'config.py',
-      'run.py',
-      'requirements.txt'
+      'run.py'
     ]);
   });
 
