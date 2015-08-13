@@ -1,9 +1,7 @@
 'use strict';
 
 module.exports = function (grunt) {
-  // Project configuration
   grunt.initConfig({
-    // Metadata
     pkg: grunt.file.readJSON('package.json'),
 
     jshint: {
@@ -23,6 +21,9 @@ module.exports = function (grunt) {
       },
       app: {
         src: ['test/test-app.js']
+      },
+      endpoint: {
+        src: ['test/test-endpoint.js']
       },
       model: {
         src: ['test/test-model.js']
@@ -50,6 +51,10 @@ module.exports = function (grunt) {
       app: {
         files: ['generators/app/**/*.js'],
         tasks: ['test:app']
+      },
+      endpoint: {
+        files: ['generators/endpoint/**/*.js'],
+        tasks: ['test:endpoint']
       },
       model: {
         files: ['generators/model/**/*.js'],
