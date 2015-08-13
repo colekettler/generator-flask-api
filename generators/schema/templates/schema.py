@@ -1,12 +1,12 @@
 from .. import ma
-from ..models.<%= modelModule %> import <%= modelName %>
+from ..models.<%= modelModule %> import <%= modelClass %>
 
 
-class <%= schemaName %>Schema(ma.ModelSchema):
+class <%= schemaClass %>Schema(ma.ModelSchema):
 
     class Meta:
-        model = <%= modelName %>
+        model = <%= modelClass %>
 
 
-<%= schemaVar %>_schema = <%= schemaName %>Schema()
-<%= schemaVar %>s_schema = <%= schemaName %>Schema(many=True)
+<%= schemaVar %>_schema = <%= schemaClass %>Schema()
+<%= schemaVarPlural %>_schema = <%= schemaClass %>Schema(many=True)

@@ -1,20 +1,20 @@
 'use strict';
 
 var _ = require('lodash');
+var inflect = require('i')();
 var yeoman = require('yeoman-generator');
 
 var AllYourBase = yeoman.generators.Base.extend({
   constructor: function () {
     yeoman.generators.Base.apply(this, arguments);
 
-    // Lodash methods.
-    this.lodash = _;
-
-    function pascalCase (word) {
-      return _.capitalize(_.camelCase(word));
-    }
-
-    this.lodash.mixin({ 'pascalCase': pascalCase });
+    // String inflection methods.
+    this.inflect = inflect;
+    _.extend(this.inflect, {
+      slugify: function (word) {
+        return inflect.underscore(inflect.dasherize(word));
+      }
+    });
   }
 });
 
