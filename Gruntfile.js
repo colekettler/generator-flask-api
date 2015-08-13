@@ -24,6 +24,9 @@ module.exports = function (grunt) {
       app: {
         src: ['test/test-app.js']
       },
+      model: {
+        src: ['test/test-model.js']
+      },
       options: {
         reporter: 'nyan'
       }
@@ -44,6 +47,10 @@ module.exports = function (grunt) {
       app: {
         files: ['generators/app/**/*.js'],
         tasks: ['test:app']
+      },
+      model: {
+        files: ['generators/model/**/*.js'],
+        tasks: ['test:model']
       }
     }
   });
