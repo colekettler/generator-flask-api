@@ -1,10 +1,10 @@
 'use strict';
 
-var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
+var AllYourBase = require('../AllYourBase');
 
-module.exports = yeoman.generators.Base.extend({
+module.exports = AllYourBase.extend({
   prompting: function () {
     var done = this.async();
 
