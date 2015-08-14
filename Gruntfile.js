@@ -78,7 +78,8 @@ module.exports = function (grunt) {
         options: {
           coverageFolder: 'test/coverage',
           mask: 'test-*.js',
-          reporter: 'nyan'
+          print: 'both',
+          reporter: 'spec'
         }
       }
     },
