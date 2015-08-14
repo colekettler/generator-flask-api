@@ -1,4 +1,4 @@
-# generator-flask-api [![Build Status](https://secure.travis-ci.org/ColeKettler/generator-flask-api.png?branch=master)](https://travis-ci.org/ColeKettler/generator-flask-api)
+# generator-flask-api [![Build Status](https://secure.travis-ci.org/ColeKettler/generator-flask-api.png?branch=master)](https://travis-ci.org/ColeKettler/generator-flask-api) [![Coverage Status](https://coveralls.io/repos/ColeKettler/generator-flask-api/badge.svg?branch=master&service=github)](https://coveralls.io/github/ColeKettler/generator-flask-api?branch=master)
 
 > [Yeoman](http://yeoman.io) generator for RESTful Flask APIs
 
