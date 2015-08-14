@@ -64,6 +64,32 @@ module.exports = function (grunt) {
         files: ['generators/schema/**/*.js'],
         tasks: ['test:schema']
       }
+    },
+
+    clean: {
+      coverage: {
+        src: ['test/coverage/']
+      }
+    },
+
+    mocha_istanbul: {
+      coverage: {
+        src: 'test',
+        options: {
+          coverageFolder: 'test/coverage',
+          mask: 'test-*.js',
+          reporter: 'nyan'
+        }
+      }
+    },
+
+    coveralls: {
+      coverage: {
+        src: 'test/coverage/lcov.info'
+      },
+      options: {
+        force: true
+      }
     }
   });
 
@@ -73,12 +99,18 @@ module.exports = function (grunt) {
     grunt.config('jshint.all.src', filepath);
   });
 
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-coveralls');
+  grunt.loadNpmTasks('grunt-mocha-istanbul');
+  grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-newer');
 
   grunt.renameTask('mochaTest', 'test');
 
   grunt.registerTask('default', ['jshint:all', 'test:all']);
+  grunt.registerTask('cover', ['clean:coverage', 'mocha_istanbul']);
+  // Travis >> Coveralls
+  grunt.registerTask('ci', ['mocha_istanbul', 'coveralls']);
 };
