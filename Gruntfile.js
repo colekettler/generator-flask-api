@@ -72,7 +72,7 @@ module.exports = function (grunt) {
       }
     },
 
-    mocha_istanbul: {
+    mochaIstanbul: {
       coverage: {
         src: 'test',
         options: {
@@ -109,9 +109,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-newer');
 
   grunt.renameTask('mochaTest', 'test');
+  grunt.renameTask('mocha_istanbul', 'mochaIstanbul');
 
   grunt.registerTask('default', ['jshint:all', 'test:all']);
-  grunt.registerTask('cover', ['clean:coverage', 'mocha_istanbul']);
+  grunt.registerTask('cover', ['clean:coverage', 'mochaIstanbul']);
   // Travis >> Coveralls
-  grunt.registerTask('ci', ['mocha_istanbul', 'coveralls']);
+  grunt.registerTask('ci', ['mochaIstanbul', 'coveralls']);
 };
