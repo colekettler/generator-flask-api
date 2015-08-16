@@ -96,17 +96,13 @@ module.exports = AllYourBase.extend({
 
   install: function () {
     if (!this.options['skip-install']) {
-      // Python dependencies.
-      this.spawnCommandSync('pip', ['install', 'marshmallow', '--pre']);
-      this.spawnCommandSync('pip', ['install', 'flask-marshmallow']);
-      this.spawnCommandSync('pip', ['install', 'flask-sqlalchemy',
-                                    'marshmallow-sqlalchemy']);
+      this.pipInstall('marshmallow', '--pre');
+      this.pipInstall('flask-marshmallow');
+      this.pipInstall(['flask-sqlalchemy', 'marshmallow-sqlalchemy']);
 
-      // Requirements file.
-      var pipFreeze = this.spawnCommandSync('pip', ['freeze'], { stdio: 'pipe' });
       this.fs.write(
         this.destinationPath('requirements.txt'),
-        pipFreeze.stdout
+        this.pipFreeze()
       );
     }
   }

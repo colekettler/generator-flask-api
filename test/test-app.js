@@ -1,8 +1,10 @@
 'use strict';
 
+var Buffer = require('buffer').Buffer;
 var path = require('path');
 var assert = require('yeoman-generator').assert;
 var helpers = require('yeoman-generator').test;
+var sinon = require('sinon');
 
 describe('flask api:app', function () {
   before(function (done) {
@@ -65,5 +67,74 @@ describe('flask api:app', function () {
       ['app/__init__.py', /register_blueprint/],
       ['app/api/__init__.py', /Blueprint/]
     ]);
+  });
+});
+
+describe('flask api:app install', function () {
+  // I hate to have to do this, but getting a reference to the generator
+  // while preserving the run context is a total mess.
+  var mocks = {};
+
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: false })
+      .withPrompts({ someOption: true })
+      .on('ready', function (generator) {
+        // Pip mocks
+        mocks.pipInstallMock = sinon.mock(generator)
+          .expects('pipInstall')
+          .atLeast(2);
+
+        mocks.pipFreezeMock = sinon.mock(generator)
+          .expects('pipFreeze')
+          .once()
+          .returns('Flask\n');
+      })
+      .on('end', done);
+  });
+
+  it('installs dependencies with pip', function () {
+    //console.log(require('util').inspect(appGenerator));
+    mocks.pipInstallMock.verify();
+  });
+
+  it('creates a requirements file', function () {
+    mocks.pipFreezeMock.verify();
+    assert.fileContent('requirements.txt', /Flask/);
+  });
+});
+
+describe('flask api:pip unit', function () {
+  before(function (done) {
+    this.generator = helpers.createGenerator('flask-api:app', [
+      path.join(__dirname, '../generators/app')
+    ]);
+
+    done();
+  });
+
+  it('calls pip install', function () {
+    var stub = sinon.stub(this.generator, 'spawnCommandSync').returnsArg(1);
+
+    var withMultiplePkgs = this.generator.pipInstall(['flask', 'marshmallow']);
+    assert.deepEqual(withMultiplePkgs, ['install', 'flask', 'marshmallow']);
+    var withOpts = this.generator.pipInstall('marshmallow', '--pre');
+    assert.deepEqual(withOpts, ['install', 'marshmallow', '--pre']);
+
+    stub.restore();
+  });
+
+  it('calls pip freeze', function () {
+    var stub = sinon.stub(this.generator, 'spawnCommandSync').returns(
+      { stdout: new Buffer('Flask==0.10.1\nmarshmallow==2.0.0b4\n') }
+    );
+    var result = this.generator.pipFreeze();
+
+    assert.equal(result,
+      'Flask==0.10.1\n' +
+      'marshmallow==2.0.0b4\n'
+    );
+
+    stub.restore();
   });
 });

@@ -15,6 +15,23 @@ var AllYourBase = yeoman.generators.Base.extend({
         return inflect.underscore(inflect.dasherize(word));
       }
     });
+
+    // Pip
+    this.pipInstall = function (pkgs, options) {
+      pkgs = Array.isArray(pkgs) ? pkgs : [pkgs];
+      options = options || [];
+
+      var args = pkgs.concat(options);
+      args.unshift('install');
+
+      return this.spawnCommandSync('pip', args);
+    };
+
+    this.pipFreeze = function () {
+      // Requirements file
+      var output = this.spawnCommandSync('pip', ['freeze'], { stdio: 'pipe' });
+      return output.stdout.toString();
+    };
   }
 });
 

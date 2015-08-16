@@ -43,6 +43,7 @@
     "grunt-newer": "^1.1.1",
     "istanbul": "^0.3.17",
     "jshint-stylish": "^2.0.1",
-    "mocha": "*"
+    "mocha": "*",
+    "sinon": "^1.15.4"
   }
 }
