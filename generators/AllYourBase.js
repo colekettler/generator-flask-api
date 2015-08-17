@@ -8,6 +8,9 @@ var AllYourBase = yeoman.generators.Base.extend({
   constructor: function () {
     yeoman.generators.Base.apply(this, arguments);
 
+    // Prompt answers.
+    this.answers = {};
+
     // String inflection methods.
     this.inflect = inflect;
     _.extend(this.inflect, {

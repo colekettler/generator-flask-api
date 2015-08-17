@@ -13,6 +13,43 @@ module.exports = AllYourBase.extend({
     });
   },
 
+  prompting: function () {
+    var done = this.async();
+
+    var prompts = [{
+      type: 'checkbox',
+      name: 'withRoutes',
+      message: 'Which HTTP methods would you like to support?',
+      choices: [{
+        name: 'GET',
+        value: 'getRoute',
+        checked: true
+      }, {
+        name: 'POST',
+        value: 'postRoute'
+      }, {
+        name: 'PUT',
+        value: 'putRoute'
+      }, {
+        name: 'DELETE',
+        value: 'deleteRoute'
+      }]
+    }];
+
+    this.prompt(prompts, function (answers) {
+      var isChecked = function (opt) {
+        return answers.withRoutes.indexOf(opt) !== -1;
+      };
+
+      this.answers.getRoute = isChecked('getRoute');
+      this.answers.postRoute = isChecked('postRoute');
+      this.answers.putRoute = isChecked('putRoute');
+      this.answers.deleteRoute = isChecked('deleteRoute');
+
+      done();
+    }.bind(this));
+  },
+
   writing: function () {
     this.fs.copyTpl(
       this.templatePath('endpoint.py'),
@@ -20,8 +57,13 @@ module.exports = AllYourBase.extend({
         path.join('app', 'api', this.inflect.underscore(this.name) + '.py')
       ),
       {
-        endpointUrl: this.inflect.slugify(this.name),
-        endpointUrlPlural: this.inflect.pluralize(
+        // Routes
+        getRoute: this.answers.getRoute,
+        postRoute: this.answers.postRoute,
+        putRoute: this.answers.putRoute,
+        deleteRoute: this.answers.deleteRoute,
+        // Values
+        endpointUrl: this.inflect.pluralize(
           this.inflect.slugify(this.name)
         ),
         endpointVar: this.inflect.underscore(this.name),
