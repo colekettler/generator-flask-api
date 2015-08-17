@@ -1,7 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
+var encoding = require('encoding');
 var inflect = require('i')();
+var unorm = require('unorm');
 var yeoman = require('yeoman-generator');
 
 var AllYourBase = yeoman.generators.Base.extend({
@@ -20,8 +22,8 @@ var AllYourBase = yeoman.generators.Base.extend({
       },
       urlSlug: function (word) {
         // Just like Mama Django used to make.
-        var normalizedWord = word.normalize('NFKD');
-        var asciiWord = (new Buffer(normalizedWord, 'ascii').toString('ascii'));
+        var normalizedWord = unorm.nfkd(word);
+        var asciiWord = encoding.convert(normalizedWord, 'ascii').toString();
         return asciiWord
           .replace(/[^\w\s-]/g, '')
           .trim()
