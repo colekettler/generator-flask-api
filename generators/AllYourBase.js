@@ -8,13 +8,17 @@ var AllYourBase = yeoman.generators.Base.extend({
   constructor: function () {
     yeoman.generators.Base.apply(this, arguments);
 
-    // Prompt answers.
+    // Prompt answers
     this.answers = {};
 
-    // String inflection methods.
-    this.inflect = inflect;
-    _.mixin(this.inflect, {
-      slugify: function (word) {
+    // Lodash methods
+    this.lodash = _;
+    _.mixin(this.lodash, {
+      pascalCase: function (word) {
+        var camelCasedWord = _.camelCase(word);
+        return _.capitalize(camelCasedWord);
+      },
+      urlSlug: function (word) {
         // Just like Mama Django used to make.
         var normalizedWord = word.normalize('NFKD');
         var asciiWord = (new Buffer(normalizedWord, 'ascii').toString('ascii'));
@@ -26,7 +30,10 @@ var AllYourBase = yeoman.generators.Base.extend({
       }
     });
 
-    // Pip
+    // String inflection methods
+    this.inflect = inflect;
+
+    // Pip methods
     this.pipInstall = function (pkgs, options) {
       pkgs = Array.isArray(pkgs) ? pkgs : [pkgs];
       options = options || [];

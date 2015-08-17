@@ -17,9 +17,9 @@ module.exports = AllYourBase.extend({
     this.fs.copyTpl(
       this.templatePath('model.py'),
       this.destinationPath(
-        path.join('app', 'models', this.inflect.underscore(this.name) + '.py')
+        path.join('app', 'models', this.lodash.snakeCase(this.name) + '.py')
       ),
-      { modelClass: this.inflect.camelize(this.name) }
+      { modelClass: this.lodash.pascalCase(this.name) }
     );
   },
 

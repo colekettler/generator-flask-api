@@ -140,24 +140,35 @@ describe('flask api:pip unit', function () {
 });
 
 
-describe('flask api:inflect unit', function () {
+describe('flask api:lodash unit', function () {
   before(function (done) {
     var generator = helpers.createGenerator('flask-api:app', [
       path.join(__dirname, '../generators/app')
     ]);
-    this.inflect = generator.inflect;
+    this.lodash = generator.lodash;
 
     done();
   });
 
-  it('slugifies with hyphens', function () {
+  it('converts to pascal case', function () {
     var wordWithSpace = 'party cat';
-    assert.equal(this.inflect.slugify(wordWithSpace), 'party-cat');
-    var wordWithExtraDashes = 'party--cat';
-    assert.equal(this.inflect.slugify(wordWithExtraDashes), 'party-cat');
+    assert.equal(this.lodash.pascalCase(wordWithSpace), 'PartyCat');
+    var wordWithUnderscores = '__party_cat__';
+    assert.equal(this.lodash.pascalCase(wordWithUnderscores), 'PartyCat');
+    var wordWithDashes = '--party-cat--';
+    assert.equal(this.lodash.pascalCase(wordWithDashes), 'PartyCat');
     var wordWithExtraSpaces = ' party  cat ';
-    assert.equal(this.inflect.slugify(wordWithExtraSpaces), 'party-cat');
+    assert.equal(this.lodash.pascalCase(wordWithExtraSpaces), 'PartyCat');
+  });
+
+  it('converts to a url slug', function () {
+    var wordWithSpace = 'party cat';
+    assert.equal(this.lodash.urlSlug(wordWithSpace), 'party-cat');
+    var wordWithExtraDashes = 'party--cat';
+    assert.equal(this.lodash.urlSlug(wordWithExtraDashes), 'party-cat');
+    var wordWithExtraSpaces = ' party  cat ';
+    assert.equal(this.lodash.urlSlug(wordWithExtraSpaces), 'party-cat');
     var wordWithNonAsciiChars = 'pàrty cat';
-    assert.equal(this.inflect.slugify(wordWithNonAsciiChars), 'party-cat');
+    assert.equal(this.lodash.urlSlug(wordWithNonAsciiChars), 'party-cat');
   });
 });

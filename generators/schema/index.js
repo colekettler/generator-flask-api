@@ -17,15 +17,15 @@ module.exports = AllYourBase.extend({
     this.fs.copyTpl(
       this.templatePath('schema.py'),
       this.destinationPath(
-        path.join('app', 'schemas', this.inflect.underscore(this.name) + '.py')
+        path.join('app', 'schemas', this.lodash.snakeCase(this.name) + '.py')
       ),
       {
-        modelClass: this.inflect.camelize(this.name),
-        modelModule: this.inflect.underscore(this.name),
-        schemaClass: this.inflect.camelize(this.name),
-        schemaVar: this.inflect.underscore(this.name),
-        schemaVarPlural: this.inflect.pluralize(
-          this.inflect.underscore(this.name)
+        modelClass: this.lodash.pascalCase(this.name),
+        modelModule: this.lodash.snakeCase(this.name),
+        schemaClass: this.lodash.pascalCase(this.name),
+        schemaVar: this.lodash.snakeCase(this.name),
+        schemaVarPlural: this.lodash.snakeCase(
+          this.inflect.pluralize(this.name)
         )
       }
     );
