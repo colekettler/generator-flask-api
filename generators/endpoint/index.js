@@ -11,6 +11,7 @@ module.exports = AllYourBase.extend({
       type: String,
       desc: 'Name of the API endpoint.'
     });
+    this.name = this.name.toLowerCase();
   },
 
   prompting: function () {

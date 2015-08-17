@@ -11,6 +11,7 @@ module.exports = AllYourBase.extend({
       type: String,
       desc: 'Name of the data model.'
     });
+    this.name = this.name.toLowerCase();
   },
 
   writing: function () {
