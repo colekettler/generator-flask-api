@@ -138,3 +138,26 @@ describe('flask api:pip unit', function () {
     stub.restore();
   });
 });
+
+
+describe('flask api:inflect unit', function () {
+  before(function (done) {
+    var generator = helpers.createGenerator('flask-api:app', [
+      path.join(__dirname, '../generators/app')
+    ]);
+    this.inflect = generator.inflect;
+
+    done();
+  });
+
+  it('slugifies with hyphens', function () {
+    var wordWithSpace = 'party cat';
+    assert.equal(this.inflect.slugify(wordWithSpace), 'party-cat');
+    var wordWithExtraDashes = 'party--cat';
+    assert.equal(this.inflect.slugify(wordWithExtraDashes), 'party-cat');
+    var wordWithExtraSpaces = ' party  cat ';
+    assert.equal(this.inflect.slugify(wordWithExtraSpaces), 'party-cat');
+    var wordWithNonAsciiChars = 'pàrty cat';
+    assert.equal(this.inflect.slugify(wordWithNonAsciiChars), 'party-cat');
+  });
+});

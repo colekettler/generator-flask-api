@@ -13,9 +13,16 @@ var AllYourBase = yeoman.generators.Base.extend({
 
     // String inflection methods.
     this.inflect = inflect;
-    _.extend(this.inflect, {
+    _.mixin(this.inflect, {
       slugify: function (word) {
-        return inflect.underscore(inflect.dasherize(word));
+        // Just like Mama Django used to make.
+        var normalizedWord = word.normalize('NFKD');
+        var asciiWord = (new Buffer(normalizedWord, 'ascii').toString('ascii'));
+        return asciiWord
+          .replace(/[^\w\s-]/g, '')
+          .trim()
+          .toLowerCase()
+          .replace(/[-\s]+/g, '-');
       }
     });
 
