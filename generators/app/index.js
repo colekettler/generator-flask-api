@@ -5,6 +5,39 @@ var yosay = require('yosay');
 var AllYourBase = require('../AllYourBase');
 
 module.exports = AllYourBase.extend({
+  initializing: {
+    checkPython: function () {
+      this.whichPython(function (err, stdout) {
+        this.pythonPath = stdout.toString();
+
+        if (this.pythonPath.length === 0) {
+          this.abort(
+            'You don\'t appear to have Python installed. You should fix that ' +
+              'post-haste! Try running me again when you have that sorted out.'
+          );
+        }
+      }.bind(this));
+    },
+
+    checkPip: function () {
+      this.whichPip(function (err, stdout) {
+        this.pipPath = stdout.toString();
+
+        if (!this.options['skip-install'] && this.pipPath.length === 0) {
+          this.abort(
+            'It looks like you don\'t have Pip installed on your active ' +
+              'Python, which would make installing things a little tricky! ' +
+              'Try running me again when you have that sorted out.'
+          );
+        }
+      }.bind(this));
+    },
+
+    checkVirtualEnv: function () {
+      this.hasActiveVirtualEnv = this.inVirtualEnv();
+    }
+  },
+
   prompting: function () {
     var done = this.async();
 
@@ -16,20 +49,42 @@ module.exports = AllYourBase.extend({
 
     var prompts = [{
       type: 'confirm',
-      name: 'someOption',
-      message: 'Would you like to enable this option?',
-      default: true
+      name: 'useSystemPython',
+      message: 'Since you\'re not using a virtual environment, are you ' +
+        'alright with installing to your system\'s Python? (You really ' +
+        'should consider using a virtual environment!)',
+      default: false,
+      when: function () {
+        return !this.options['skip-install'] && !this.hasActiveVirtualEnv;
+      }.bind(this)
     }];
 
-    this.prompt(prompts, function (props) {
-      this.props = props;
-      // To access props later use this.props.someOption;
+    this.prompt(prompts, function (answers) {
+      if (answers.useSystemPython === false) {
+        this.abort(
+          'Sorry, there isn\'t much I can do without a Python to install to! ' +
+            'Try running me again when you have that sorted out.'
+        );
+      }
 
+      this.answers = answers;
       done();
     }.bind(this));
   },
 
   configuring: {
+    virtualEnv: function () {
+      if (this.hasActiveVirtualEnv) {
+        this.log(chalk.cyan(
+          'It would appear that you\'re already in a Python virtual ' +
+            'environment. Fantastic! I\'ll link that up for you.'
+        ));
+        this.linkActiveVirtualEnv('.', function () {
+          this.log(chalk.cyan('Symlinked virtual environment into ./venv'));
+        }.bind(this));
+      }
+    },
+
     git: function () {
       this.fs.copy(
         this.templatePath('gitignore'),

@@ -6,11 +6,39 @@ var helpers = require('yeoman-generator').test;
 var sinon = require('sinon');
 
 describe('flask api:app', function () {
+  var mocks = {};
+  var stubs = {};
+
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
-      .withPrompts({ someOption: true })
+      .on('ready', function (generator) {
+        mocks.whichPythonMock = sinon.mock(generator)
+          .expects('whichPython')
+          .once()
+          .callsArgWithAsync(0, null, '~/.venv/venv/bin/python');
+
+        mocks.whichPipMock = sinon.mock(generator)
+          .expects('whichPip')
+          .once()
+          .callsArgWithAsync(0, null, '~/.venv/venv/bin/pip');
+
+        mocks.inVirtualEnvMock = sinon.mock(generator)
+          .expects('inVirtualEnv')
+          .atLeast(1)
+          .returns(true);
+
+        stubs.linkActiveVirtualEnvStub = sinon.stub(
+          generator, 'linkActiveVirtualEnv'
+        );
+      })
       .on('end', done);
+  });
+
+  after(function () {
+    for (var stub in stubs) {
+      stubs[stub].restore();
+    }
   });
 
   it('creates expected files', function () {
@@ -46,6 +74,12 @@ describe('flask api:app', function () {
     ]);
   });
 
+  it('checks for python, pip, and active virtualenv', function () {
+    mocks.whichPythonMock.verify();
+    mocks.whichPipMock.verify();
+    mocks.inVirtualEnvMock.verify();
+  });
+
   it('sets base configs', function () {
     assert.fileContent([
       ['config.py', /ProductionConfig/],
@@ -69,17 +103,173 @@ describe('flask api:app', function () {
   });
 });
 
+describe('flask api:app with virtualenv', function () {
+  var mocks = {};
+  var stubs = {};
+
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: true })
+      .on('ready', function (generator) {
+        mocks.linkActiveVirtualEnvMock = sinon.mock(generator)
+          .expects('linkActiveVirtualEnv')
+          .withArgs('.')
+          .once();
+
+        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
+        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
+        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
+          .returns(true);
+      })
+      .on('end', done);
+  });
+
+  after(function () {
+    for (var stub in stubs) {
+      stubs[stub].restore();
+    }
+  });
+
+  it('creates a symlink to a python virtual environment', function () {
+    mocks.linkActiveVirtualEnvMock.verify();
+  });
+});
+
+describe('flask api:app without virtualenv', function () {
+  var mocks = {};
+  var stubs = {};
+
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: true })
+      .on('ready', function (generator) {
+        mocks.linkActiveVirtualEnvMock = sinon.mock(generator)
+          .expects('linkActiveVirtualEnv')
+          .never();
+
+        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
+        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
+        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
+          .returns(false);
+      })
+      .on('end', done);
+  });
+
+  after(function () {
+    for (var stub in stubs) {
+      stubs[stub].restore();
+    }
+  });
+
+  it('does not create a symlink to a python virtual environment', function () {
+    mocks.linkActiveVirtualEnvMock.verify();
+  });
+});
+
+describe('flask api:app does not use system python', function () {
+  var mocks = {};
+  var stubs = {};
+
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: false })
+      .withPrompts({ useSystemPython: false })
+      .on('ready', function (generator) {
+        mocks.abortMock = sinon.mock(generator)
+          .expects('abort')
+          .once();
+
+        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
+        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
+        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
+          .returns(false);
+        stubs.pipInstallStub = sinon.stub(generator, 'pipInstall');
+        stubs.pipFreezeStub = sinon.stub(generator, 'pipFreeze')
+          .returns('');
+      })
+      .on('end', done);
+  });
+
+  after(function () {
+    for (var stub in stubs) {
+      stubs[stub].restore();
+    }
+  });
+
+  it('aborts the installation', function () {
+    mocks.abortMock.verify();
+  });
+});
+
+describe('flask api:app no python', function () {
+  var stubs = {};
+
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: false })
+      .on('ready', function (generator) {
+        stubs.abortStub = sinon.stub(generator, 'abort');
+        stubs.whichPythonStub = sinon.stub(generator, 'whichPython')
+          .callsArgWithAsync(0, null, '');
+        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
+        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
+          .returns(false);
+        stubs.pipInstallStub = sinon.stub(generator, 'pipInstall');
+        stubs.pipFreezeStub = sinon.stub(generator, 'pipFreeze')
+          .returns('');
+      })
+      .on('end', done);
+  });
+
+  after(function () {
+    for (var stub in stubs) {
+      stubs[stub].restore();
+    }
+  });
+
+  it('aborts the installation', function () {
+    sinon.assert.calledWith(stubs.abortStub, sinon.match('Python installed'));
+  });
+});
+
+describe('flask api:app no pip', function () {
+  var stubs = {};
+
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: false })
+      .on('ready', function (generator) {
+        stubs.abortStub = sinon.stub(generator, 'abort');
+        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
+        stubs.whichPipStub = sinon.stub(generator, 'whichPip')
+          .callsArgWithAsync(0, null, '');
+        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
+          .returns(false);
+        stubs.pipInstallStub = sinon.stub(generator, 'pipInstall');
+        stubs.pipFreezeStub = sinon.stub(generator, 'pipFreeze')
+          .returns('');
+      })
+      .on('end', done);
+  });
+
+  after(function () {
+    for (var stub in stubs) {
+      stubs[stub].restore();
+    }
+  });
+
+  it('aborts the installation', function () {
+    sinon.assert.calledWith(stubs.abortStub, sinon.match('Pip installed'));
+  });
+});
+
 describe('flask api:app install', function () {
-  // I hate to have to do this, but getting a reference to the generator
-  // while preserving the run context is a total mess.
   var mocks = {};
 
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: false })
-      .withPrompts({ someOption: true })
       .on('ready', function (generator) {
-        // Pip mocks
         mocks.pipInstallMock = sinon.mock(generator)
           .expects('pipInstall')
           .atLeast(2);
@@ -93,7 +283,6 @@ describe('flask api:app install', function () {
   });
 
   it('installs dependencies with pip', function () {
-    //console.log(require('util').inspect(appGenerator));
     mocks.pipInstallMock.verify();
   });
 

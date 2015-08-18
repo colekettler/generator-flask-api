@@ -1,6 +1,10 @@
 'use strict';
 
+var cp = require('child_process');
+var fs = require('fs');
+var path = require('path');
 var _ = require('lodash');
+var chalk = require('chalk');
 var encoding = require('encoding');
 var inflect = require('i')();
 var unorm = require('unorm');
@@ -35,7 +39,37 @@ var AllYourBase = yeoman.generators.Base.extend({
     // String inflection methods
     this.inflect = inflect;
 
+    // Abort installation.
+    this.abort = function (msg) {
+      this.log(chalk.red(msg));
+      this.env.error(chalk.red('Aborting generation.'));
+    };
+
+    // Python methods
+    this.whichPython = function (cb) {
+      return cp.exec('which python', cb);
+    };
+
+    this.getVirtualEnv = function () {
+      return process.env.VIRTUAL_ENV;
+    };
+
+    this.inVirtualEnv = function () {
+      var virtualEnv = this.getVirtualEnv();
+      return virtualEnv && virtualEnv.length > 0;
+    };
+
+    this.linkActiveVirtualEnv = function (basedir, cb) {
+      var virtualEnv = this.getVirtualEnv();
+      var dstpath = path.join(basedir, 'venv');
+      return fs.symlink(virtualEnv, dstpath, 'dir', cb);
+    };
+
     // Pip methods
+    this.whichPip = function (cb) {
+      return cp.exec('which pip', cb);
+    };
+
     this.pipInstall = function (pkgs, options) {
       pkgs = Array.isArray(pkgs) ? pkgs : [pkgs];
       options = options || [];
