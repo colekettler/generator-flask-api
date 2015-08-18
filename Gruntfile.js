@@ -22,6 +22,9 @@ module.exports = function (grunt) {
       app: {
         src: ['test/test-app.js']
       },
+      base: {
+        src: ['test/test-base.js']
+      },
       endpoint: {
         src: ['test/test-endpoint.js']
       },
@@ -51,6 +54,10 @@ module.exports = function (grunt) {
       app: {
         files: ['generators/app/**/*.js'],
         tasks: ['test:app']
+      },
+      base: {
+        files: ['generators/AllYourBase.js'],
+        tasks: ['test:base']
       },
       endpoint: {
         files: ['generators/endpoint/**/*.js'],
