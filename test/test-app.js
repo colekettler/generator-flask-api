@@ -114,7 +114,8 @@ describe('flask api:app with virtualenv', function () {
         mocks.linkActiveVirtualEnvMock = sinon.mock(generator)
           .expects('linkActiveVirtualEnv')
           .withArgs('.')
-          .once();
+          .once()
+          .callsArgAsync(1);
 
         stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
         stubs.whichPipStub = sinon.stub(generator, 'whichPip');
