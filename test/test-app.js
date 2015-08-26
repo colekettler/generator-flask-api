@@ -265,6 +265,7 @@ describe('flask api:app no pip', function () {
 
 describe('flask api:app install', function () {
   var mocks = {};
+  var stubs = {};
 
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
@@ -278,6 +279,14 @@ describe('flask api:app install', function () {
           .expects('pipFreeze')
           .once()
           .returns('Flask\n');
+
+        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
+        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
+        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
+          .returns(true);
+        stubs.linkActiveVirtualEnvStub = sinon.stub(
+          generator, 'linkActiveVirtualEnv'
+        );
       })
       .on('end', done);
   });
