@@ -4,4 +4,5 @@ from flask import Blueprint
 api = Blueprint('api', __name__)
 
 
-# from . import resource
+# Import any endpoints here to make them available
+#from . import dis_endpoint, dat_endpoint

@@ -31,6 +31,9 @@ module.exports = function (grunt) {
       model: {
         src: ['test/test-model.js']
       },
+      resource: {
+        src: ['test/test-resource.js']
+      },
       schema: {
         src: ['test/test-schema.js']
       },
@@ -66,6 +69,10 @@ module.exports = function (grunt) {
       model: {
         files: ['generators/model/**/*.js'],
         tasks: ['test:model']
+      },
+      resource: {
+        files: ['generators/resource/**/*.js'],
+        tasks: ['test:resource']
       },
       schema: {
         files: ['generators/schema/**/*.js'],

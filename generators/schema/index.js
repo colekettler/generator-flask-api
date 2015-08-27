@@ -33,9 +33,12 @@ module.exports = AllYourBase.extend({
   },
 
   end: function () {
-    this.log(chalk.cyan(
-      'All set! Be sure to import your fancy new schema into any ' +
-        'endpoints that need it.'
-    ));
+    if (!this.options.isGeneratingResource) {
+      this.log(chalk.green('All set!'));
+      this.log(chalk.cyan(
+        'Be sure to import your fancy new schema into any endpoints ' +
+          'that need it.'
+      ));
+    }
   }
 });
