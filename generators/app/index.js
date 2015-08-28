@@ -1,5 +1,6 @@
 'use strict';
 
+var path = require('path');
 var chalk = require('chalk');
 var yosay = require('yosay');
 var AllYourBase = require('../AllYourBase');
@@ -35,41 +36,84 @@ module.exports = AllYourBase.extend({
 
     checkVirtualEnv: function () {
       this.hasActiveVirtualEnv = this.inVirtualEnv();
+    },
+
+    setConfigDefaults: function () {
+      this.config.defaults({
+        versioningScheme: 'none',
+        currentVersion: ''
+      });
     }
   },
 
-  prompting: function () {
-    var done = this.async();
+  prompting: {
+    greet: function () {
+      // Have Yeoman greet the user.
+      this.log(yosay(
+        'Welcome to the most cromulent ' + chalk.red('Flask REST API') +
+          ' generator!'
+      ));
+    },
 
-    // Have Yeoman greet the user.
-    this.log(yosay(
-      'Welcome to the most cromulent ' + chalk.red('Flask REST API') +
-        ' generator!'
-    ));
+    confirmPython: function () {
+      var done = this.async();
 
-    var prompts = [{
-      type: 'confirm',
-      name: 'useSystemPython',
-      message: 'Since you\'re not using a virtual environment, are you ' +
-        'alright with installing to your system\'s Python? (You really ' +
-        'should consider using a virtual environment!)',
-      default: false,
-      when: function () {
-        return !this.options['skip-install'] && !this.hasActiveVirtualEnv;
-      }.bind(this)
-    }];
+      this.prompt({
+        type: 'confirm',
+        name: 'useSystemPython',
+        message: 'Since you\'re not using a virtual environment, are you ' +
+          'alright with installing to your system\'s Python? (You really ' +
+          'should consider using a virtual environment!)',
+        default: false,
+        when: function () {
+          return !this.options['skip-install'] && !this.hasActiveVirtualEnv;
+        }.bind(this)
+      }, function (answers) {
+        if (answers.useSystemPython === false) {
+          this.abort(
+            'Sorry, there isn\'t much I can do without a Python to install ' +
+              'to! Try running me again when you have that sorted out.'
+          );
+        }
 
-    this.prompt(prompts, function (answers) {
-      if (answers.useSystemPython === false) {
-        this.abort(
-          'Sorry, there isn\'t much I can do without a Python to install to! ' +
-            'Try running me again when you have that sorted out.'
+        done();
+      }.bind(this));
+    },
+
+    chooseVersioningScheme: function () {
+      var done = this.async();
+
+      this.prompt({
+        type: 'list',
+        name: 'versioningScheme',
+        message: 'Which URL scheme would you like to use for versioning ' +
+          'your API?',
+        choices: [
+          { name: 'major: /api/v1/resource', value: 'major' },
+          { name: 'major.minor: /api/v1.0/resource', value: 'minor' },
+          { name: 'none: /api/resource', value: 'none' }
+        ],
+        default: 'major'
+      }, function (answer) {
+        this.answers = answer;
+
+        var versions = {
+          major: 'v1',
+          minor: 'v1.0',
+          none: ''
+        };
+
+        this.config.set('versioningScheme', this.answers.versioningScheme);
+        this.config.set(
+          'currentVersion', versions[this.answers.versioningScheme]
         );
-      }
 
-      this.answers = answers;
-      done();
-    }.bind(this));
+        this.templateVars.apiModule = this.getApiModuleName();
+        this.templateVars.apiUrl = this.getApiUrlName();
+
+        done();
+      }.bind(this));
+    }
   },
 
   configuring: {
@@ -121,16 +165,23 @@ module.exports = AllYourBase.extend({
     },
 
     app: function () {
-      this.fs.copy(
+      this.fs.copyTpl(
         this.templatePath('app_init.py'),
-        this.destinationPath('app/__init__.py')
+        this.destinationPath('app/__init__.py'),
+        {
+          apiModule: this.templateVars.apiModule,
+          apiUrl: this.templateVars.apiUrl
+        }
       );
     },
 
     api: function () {
-      this.fs.copy(
+      this.fs.copyTpl(
         this.templatePath('api_init.py'),
-        this.destinationPath('app/api/__init__.py')
+        this.destinationPath(
+          path.join('app', this.templateVars.apiModule, '__init__.py')
+        ),
+        { apiModule: this.templateVars.apiModule }
       );
     },
 

@@ -1,7 +1,7 @@
 from flask import Blueprint
 
 
-api = Blueprint('api', __name__)
+api = Blueprint('<%= apiModule %>', __name__)
 
 
 # Import any endpoints here to make them available

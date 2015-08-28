@@ -17,6 +17,9 @@ var AllYourBase = yeoman.generators.Base.extend({
     // Prompt answers
     this.answers = {};
 
+    // Values for templating
+    this.templateVars = {};
+
     // Lodash methods
     this.lodash = _;
     _.mixin(this.lodash, {
@@ -43,6 +46,25 @@ var AllYourBase = yeoman.generators.Base.extend({
     this.abort = function (msg) {
       this.log(chalk.red(msg));
       this.env.error(chalk.red('Aborting generation.'));
+    };
+
+    // API template variable names
+    this.getApiModuleName = function () {
+      var versioningScheme = this.config.get('versioningScheme');
+      var moduleName = 'api';
+      if (versioningScheme !== 'none') {
+        moduleName += '_' + this.config.get('currentVersion').replace('.', '_');
+      }
+      return moduleName;
+    };
+
+    this.getApiUrlName = function () {
+      var versioningScheme = this.config.get('versioningScheme');
+      var urlName = 'api';
+      if (versioningScheme !== 'none') {
+        urlName += '/' + this.config.get('currentVersion');
+      }
+      return urlName;
     };
 
     // Python methods

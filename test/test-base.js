@@ -172,3 +172,51 @@ describe('flask api:base abort', function () {
     errorMock.verify();
   });
 });
+
+describe('flask api:base api template vars', function () {
+  var sandbox;
+
+  before(function (done) {
+    sandbox = sinon.sandbox.create();
+    this.generator = helpers.createGenerator('flask-api:app', [
+      path.join(__dirname, '../generators/app')
+    ]);
+    done();
+  });
+
+  beforeEach(function () {
+    var configGetStub = sandbox.stub(this.generator.config, 'get');
+    configGetStub
+      .withArgs('versioningScheme')
+      .onFirstCall().returns('major')
+      .onSecondCall().returns('minor')
+      .onThirdCall().returns('none');
+    configGetStub
+      .withArgs('currentVersion')
+      .onFirstCall().returns('v1')
+      .onSecondCall().returns('v1.0')
+      .onThirdCall().returns('');
+  });
+
+  afterEach(function () {
+    sandbox.restore();
+  });
+
+  it('generates a versioned api module name', function () {
+    var apiModuleMajorVersion = this.generator.getApiModuleName();
+    assert.equal(apiModuleMajorVersion, 'api_v1');
+    var apiModuleMinorVersion = this.generator.getApiModuleName();
+    assert.equal(apiModuleMinorVersion, 'api_v1_0');
+    var apiModuleNoVersion = this.generator.getApiModuleName();
+    assert.equal(apiModuleNoVersion, 'api');
+  });
+
+  it('generates a versioned api url name', function () {
+    var apiUrlMajorVersion = this.generator.getApiUrlName();
+    assert.equal(apiUrlMajorVersion, 'api/v1');
+    var apiUrlMinorVersion = this.generator.getApiUrlName();
+    assert.equal(apiUrlMinorVersion, 'api/v1.0');
+    var apiUrlNoVersion = this.generator.getApiUrlName();
+    assert.equal(apiUrlNoVersion, 'api');
+  });
+});

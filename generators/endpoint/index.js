@@ -89,7 +89,7 @@ module.exports = AllYourBase.extend({
     }
     this.log(chalk.cyan(
       'Be sure to import your fancy new endpoint into your API blueprint in ' +
-        'app/api/__init__.py, like this:'
+        'your API package\'s __init__.py, like this:'
     ));
     this.log(chalk.bold(
       'from . import ' + this.lodash.snakeCase(this.name)
