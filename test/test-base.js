@@ -173,6 +173,49 @@ describe('flask api:base abort', function () {
   });
 });
 
+describe('flask api:base validateUrlPrefix', function () {
+  before(function (done) {
+    this.generator = helpers.createGenerator('flask-api:app', [
+      path.join(__dirname, '../generators/app')
+    ]);
+    done();
+  });
+
+  it('accepts valid prefixes', function () {
+    var singleComponent = '/api';
+    assert(this.generator.validateUrlPrefix(singleComponent));
+    var multipleComponents = '/aye/pee/eye';
+    assert(this.generator.validateUrlPrefix(multipleComponents));
+  });
+
+  it('rejects invalid prefixes', function () {
+    var noLeadingSlash = 'api';
+    assert.notEqual(this.generator.validateUrlPrefix(noLeadingSlash), true);
+    var trailingSlash = '/api/';
+    assert.notEqual(this.generator.validateUrlPrefix(trailingSlash), true);
+    var duplicateSlashes = '/aye//pee/eye';
+    assert.notEqual(this.generator.validateUrlPrefix(duplicateSlashes), true);
+  });
+});
+
+describe('flask api:base filterUrlPrefix', function () {
+  before(function (done) {
+    this.generator = helpers.createGenerator('flask-api:app', [
+      path.join(__dirname, '../generators/app')
+    ]);
+    done();
+  });
+
+  it('coverts url prefix components to slugs', function () {
+    var singleComponent = '/a.p\i';
+    assert.equal(this.generator.filterUrlPrefix(singleComponent), '/api');
+    var multipleComponents = '/àye/pee/èye';
+    assert.equal(
+      this.generator.filterUrlPrefix(multipleComponents), '/aye/pee/eye'
+    );
+  });
+});
+
 describe('flask api:base api template vars', function () {
   var sandbox;
 
@@ -184,39 +227,61 @@ describe('flask api:base api template vars', function () {
     done();
   });
 
-  beforeEach(function () {
-    var configGetStub = sandbox.stub(this.generator.config, 'get');
-    configGetStub
-      .withArgs('versioningScheme')
-      .onFirstCall().returns('major')
-      .onSecondCall().returns('minor')
-      .onThirdCall().returns('none');
-    configGetStub
-      .withArgs('currentVersion')
-      .onFirstCall().returns('v1')
-      .onSecondCall().returns('v1.0')
-      .onThirdCall().returns('');
-  });
-
   afterEach(function () {
     sandbox.restore();
   });
 
-  it('generates a versioned api module name', function () {
-    var apiModuleMajorVersion = this.generator.getApiModuleName();
-    assert.equal(apiModuleMajorVersion, 'api_v1');
-    var apiModuleMinorVersion = this.generator.getApiModuleName();
-    assert.equal(apiModuleMinorVersion, 'api_v1_0');
-    var apiModuleNoVersion = this.generator.getApiModuleName();
-    assert.equal(apiModuleNoVersion, 'api');
+  describe('api versioning', function () {
+    beforeEach(function () {
+      var configGetStub = sandbox.stub(this.generator.config, 'get');
+      configGetStub
+        .withArgs('versioningScheme')
+        .onFirstCall().returns('major')
+        .onSecondCall().returns('minor')
+        .onThirdCall().returns('none');
+      configGetStub
+        .withArgs('currentVersion')
+        .onFirstCall().returns('v1')
+        .onSecondCall().returns('v1.0')
+        .onThirdCall().returns('');
+      configGetStub.withArgs('urlPrefix').returns('/api');
+    });
+
+    it('generates a versioned api module name', function () {
+      var apiModuleMajorVersion = this.generator.getApiModuleName();
+      assert.equal(apiModuleMajorVersion, 'api_v1');
+      var apiModuleMinorVersion = this.generator.getApiModuleName();
+      assert.equal(apiModuleMinorVersion, 'api_v1_0');
+      var apiModuleNoVersion = this.generator.getApiModuleName();
+      assert.equal(apiModuleNoVersion, 'api');
+    });
+
+    it('generates a versioned api url name', function () {
+      var apiUrlMajorVersion = this.generator.getApiUrlName();
+      assert.equal(apiUrlMajorVersion, '/api/v1');
+      var apiUrlMinorVersion = this.generator.getApiUrlName();
+      assert.equal(apiUrlMinorVersion, '/api/v1.0');
+      var apiUrlNoVersion = this.generator.getApiUrlName();
+      assert.equal(apiUrlNoVersion, '/api');
+    });
   });
 
-  it('generates a versioned api url name', function () {
-    var apiUrlMajorVersion = this.generator.getApiUrlName();
-    assert.equal(apiUrlMajorVersion, 'api/v1');
-    var apiUrlMinorVersion = this.generator.getApiUrlName();
-    assert.equal(apiUrlMinorVersion, 'api/v1.0');
-    var apiUrlNoVersion = this.generator.getApiUrlName();
-    assert.equal(apiUrlNoVersion, 'api');
+  describe('api url prefix', function () {
+    beforeEach(function () {
+      var configGetStub = sandbox.stub(this.generator.config, 'get');
+      configGetStub.withArgs('versioningScheme').returns('major');
+      configGetStub.withArgs('currentVersion').returns('v1');
+      configGetStub
+        .withArgs('urlPrefix')
+        .onFirstCall().returns('/api')
+        .onSecondCall().returns('');
+    });
+
+    it('generates a prefixed api url name', function () {
+      var apiUrlWithPrefix = this.generator.getApiUrlName();
+      assert.equal(apiUrlWithPrefix, '/api/v1');
+      var apiUrlWithoutPrefix = this.generator.getApiUrlName();
+      assert.equal(apiUrlWithoutPrefix, '/v1');
+    });
   });
 });

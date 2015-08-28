@@ -41,7 +41,8 @@ module.exports = AllYourBase.extend({
     setConfigDefaults: function () {
       this.config.defaults({
         versioningScheme: 'none',
-        currentVersion: ''
+        currentVersion: '',
+        urlPrefix: '/api'
       });
     }
   },
@@ -94,21 +95,47 @@ module.exports = AllYourBase.extend({
           { name: 'none: /api/resource', value: 'none' }
         ],
         default: 'major'
-      }, function (answer) {
-        this.answers = answer;
+      }, function (answers) {
+        this.lodash.extend(this.answers, answers);
 
+        var versioningScheme = answers.versioningScheme;
         var versions = {
           major: 'v1',
           minor: 'v1.0',
           none: ''
         };
-
-        this.config.set('versioningScheme', this.answers.versioningScheme);
-        this.config.set(
-          'currentVersion', versions[this.answers.versioningScheme]
-        );
-
+        this.config.set('versioningScheme', versioningScheme);
+        this.config.set('currentVersion', versions[versioningScheme]);
         this.templateVars.apiModule = this.getApiModuleName();
+
+        done();
+      }.bind(this));
+    },
+
+    chooseUrlPrefix: function () {
+      var done = this.async();
+
+      this.prompt([{
+        type: 'confirm',
+        name: 'useUrlPrefix',
+        message: 'Do you want to use a URL prefix for your API endpoints?',
+        default: true
+      }, {
+        type: 'input',
+        name: 'urlPrefix',
+        message: 'Which URL prefix do you want to use for your API ' +
+          'endpoints?',
+        default: '/api',
+        validate: this.validateUrlPrefix.bind(this),
+        filter: this.filterUrlPrefix.bind(this),
+        when: function (answers) {
+          return answers.useUrlPrefix;
+        }
+      }], function (answers) {
+        this.lodash.extend(this.answers, answers);
+
+        var urlPrefix = answers.useUrlPrefix ? answers.urlPrefix : '';
+        this.config.set('urlPrefix', urlPrefix);
         this.templateVars.apiUrl = this.getApiUrlName();
 
         done();

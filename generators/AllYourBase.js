@@ -50,8 +50,8 @@ var AllYourBase = yeoman.generators.Base.extend({
 
     // API template variable names
     this.getApiModuleName = function () {
-      var versioningScheme = this.config.get('versioningScheme');
       var moduleName = 'api';
+      var versioningScheme = this.config.get('versioningScheme');
       if (versioningScheme !== 'none') {
         moduleName += '_' + this.config.get('currentVersion').replace('.', '_');
       }
@@ -59,12 +59,32 @@ var AllYourBase = yeoman.generators.Base.extend({
     };
 
     this.getApiUrlName = function () {
+      var urlName = this.config.get('urlPrefix');
       var versioningScheme = this.config.get('versioningScheme');
-      var urlName = 'api';
       if (versioningScheme !== 'none') {
         urlName += '/' + this.config.get('currentVersion');
       }
       return urlName;
+    };
+
+    // Prompt filters and validators
+    this.validateUrlPrefix = function (value) {
+      if (!this.lodash.startsWith(value, '/')) {
+        return 'Prefixes should start with a forward slash "\/".';
+      }
+      if (this.lodash.endsWith(value, '/')) {
+        return 'Prefixes should not end with a trailing forward slash "\/".';
+      }
+      if (/\/{2,}/.test(value)) {
+        return 'Prefixes should not have consecutive forward slashes "\/".';
+      }
+      return true;
+    };
+
+    this.filterUrlPrefix = function (value) {
+      var components = value.split('/');
+      components = this.lodash.map(components, this.lodash.urlSlug);
+      return components.join('/');
     };
 
     // Python methods

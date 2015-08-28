@@ -17,6 +17,6 @@ def create_app(config_name):
     ma.init_app(app)
 
     from .<%= apiModule %> import api as <%= apiModule %>_blueprint
-    app.register_blueprint(<%= apiModule %>_blueprint, url_prefix='/<%= apiUrl %>')
+    app.register_blueprint(<%= apiModule %>_blueprint, url_prefix='<%= apiUrl %>')
 
     return app

@@ -368,6 +368,62 @@ describe('flask api:app minor versioning', function () {
   });
 });
 
+describe('flask api:app custom url prefix', function () {
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: true })
+      .withPrompts({ urlPrefix: '/aye/pee/eye' })
+      .on('ready', function (generator) {
+        this.sandbox = sinon.sandbox.create();
+        this.sandbox.stub(generator, 'whichPython');
+        this.sandbox.stub(generator, 'whichPip');
+        this.sandbox.stub(generator, 'inVirtualEnv').returns(true);
+        this.sandbox.stub(generator, 'linkActiveVirtualEnv');
+        this.sandbox.stub(generator, 'pipInstall');
+        this.sandbox.stub(generator, 'pipFreeze').returns('');
+      }.bind(this))
+      .on('end', done);
+  });
+
+  after(function () {
+    this.sandbox.restore();
+  });
+
+  it('correctly sets the url prefix', function () {
+    assert.fileContent([
+      ['app/__init__.py', /url_prefix='\/aye\/pee\/eye\/v1'/],
+    ]);
+  });
+});
+
+describe('flask api:app no url prefix', function () {
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: true })
+      .withPrompts({ useUrlPrefix: false })
+      .on('ready', function (generator) {
+        this.sandbox = sinon.sandbox.create();
+        this.sandbox.stub(generator, 'whichPython');
+        this.sandbox.stub(generator, 'whichPip');
+        this.sandbox.stub(generator, 'inVirtualEnv').returns(true);
+        this.sandbox.stub(generator, 'linkActiveVirtualEnv');
+        this.sandbox.stub(generator, 'pipInstall');
+        this.sandbox.stub(generator, 'pipFreeze').returns('');
+      }.bind(this))
+      .on('end', done);
+  });
+
+  after(function () {
+    this.sandbox.restore();
+  });
+
+  it('correctly sets the url prefix', function () {
+    assert.fileContent([
+      ['app/__init__.py', /url_prefix='\/v1'/],
+    ]);
+  });
+});
+
 describe('flask api:app install', function () {
   var mocks = {};
   var stubs = {};
