@@ -8,15 +8,13 @@ describe('flask api:endpoint without methods', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/endpoint'))
       .withArguments('beartato')
-      .withOptions({ skipInstall: true, force: true })
+      .withOptions({ skipInstall: true })
       .withPrompts({ withRoutes: [] })
       .on('end', done);
   });
 
   it('creates expected files', function () {
-    assert.file([
-      'app/api/beartato.py'
-    ]);
+    assert.file('app/api/beartato.py');
   });
 
   it('does not create any routes', function () {
@@ -36,9 +34,7 @@ describe('flask api:endpoint with methods', function () {
   });
 
   it('creates expected files', function () {
-    assert.file([
-      'app/api/reginald.py'
-    ]);
+    assert.file('app/api/reginald.py');
   });
 
   it('creates a GET list route', function () {
@@ -74,5 +70,19 @@ describe('flask api:endpoint with methods', function () {
       ['app/api/reginald.py', /'\/reginalds\/<int:id>', methods=\['DELETE'\]/],
       ['app/api/reginald.py', /delete_reginald\(id\):/]
     ]);
+  });
+});
+
+describe('flask api:endpoint as part of resource', function () {
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/endpoint'))
+      .withArguments('beartato')
+      .withOptions({ skipInstall: true, isGeneratingResource: true })
+      .withPrompts({ withRoutes: [] })
+      .on('end', done);
+  });
+
+  it('creates expected files', function () {
+    assert.file('app/api/beartato.py');
   });
 });
