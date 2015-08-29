@@ -37,6 +37,9 @@ module.exports = function (grunt) {
       schema: {
         src: ['test/test-schema.js']
       },
+      version: {
+        src: ['test/test-version.js']
+      },
       options: {
         reporter: 'nyan'
       }
@@ -77,6 +80,10 @@ module.exports = function (grunt) {
       schema: {
         files: ['generators/schema/**/*.js'],
         tasks: ['test:schema']
+      },
+      version: {
+        files: ['generators/version/**/*.js'],
+        tasks: ['test:version']
       }
     },
 

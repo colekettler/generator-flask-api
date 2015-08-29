@@ -216,6 +216,68 @@ describe('flask api:base filterUrlPrefix', function () {
   });
 });
 
+describe('flask api:base bumpMajorVersion', function () {
+  before(function (done) {
+    this.generator = helpers.createGenerator('flask-api:app', [
+      path.join(__dirname, '../generators/app')
+    ]);
+    done();
+  });
+
+  it('increments the major version', function () {
+    var currentVersion = 'v1';
+    assert.equal(this.generator.bumpMajorVersion(currentVersion), 'v2');
+  });
+
+  it('increments the major version in a minor version string', function () {
+    var currentVersion = 'v1.0';
+    assert.equal(this.generator.bumpMajorVersion(currentVersion), 'v2.0');
+  });
+
+  it('throws an error if it is given an invalid version string', function () {
+    var invalidVersion = 'vA';
+    assert.throws(
+      this.generator.bumpMajorVersion.bind(null, invalidVersion),
+      /invalid/i
+    );
+  });
+});
+
+describe('flask api:base bumpMinorVersion', function () {
+  before(function (done) {
+    this.generator = helpers.createGenerator('flask-api:app', [
+      path.join(__dirname, '../generators/app')
+    ]);
+    done();
+  });
+
+  it('increments the minor version', function () {
+    var currentVersion = 'v1.0';
+    assert.equal(this.generator.bumpMinorVersion(currentVersion), 'v1.1');
+  });
+
+  it('throws an error if it is not given a minor version string', function () {
+    var invalidVersion = 'v1';
+    assert.throws(
+      this.generator.bumpMinorVersion.bind(null, invalidVersion),
+      /invalid/i
+    );
+  });
+
+  it('throws an error if it is given an invalid version string', function () {
+    var invalidMinorVersion = 'v1.A';
+    assert.throws(
+      this.generator.bumpMinorVersion.bind(null, invalidMinorVersion),
+      /invalid/i
+    );
+    var invalidMajorVersion = 'vA.1';
+    assert.throws(
+      this.generator.bumpMinorVersion.bind(null, invalidMajorVersion),
+      /invalid/i
+    );
+  });
+});
+
 describe('flask api:base api template vars', function () {
   var sandbox;
 

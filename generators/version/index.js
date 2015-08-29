@@ -1,0 +1,83 @@
+'use strict';
+
+var path = require('path');
+var chalk = require('chalk');
+var AllYourBase = require('../AllYourBase');
+
+module.exports = AllYourBase.extend({
+  initializing: function () {
+    var versioningScheme = this.config.get('versioningScheme');
+    var currentVersion = this.config.get('currentVersion');
+
+    if (versioningScheme === 'major') {
+      this.config.set('currentVersion', this.bumpMajorVersion(currentVersion));
+    }
+  },
+
+  prompting: function () {
+    var done = this.async();
+
+    var currentVersion = this.config.get('currentVersion');
+
+    this.prompt({
+      type: 'list',
+      name: 'whichBump',
+      message: 'Which version are you bumping?',
+      choices: function () {
+        return [{
+          name: 'minor: ' + currentVersion + ' -> ' +
+            this.bumpMinorVersion(currentVersion),
+          value: 'minor'
+        }, {
+          name: 'major: ' + currentVersion + ' -> ' +
+            this.bumpMajorVersion(currentVersion),
+          value: 'major'
+        }];
+      }.bind(this),
+      default: 'minor',
+      when: function () {
+        return this.config.get('versioningScheme') === 'minor';
+      }.bind(this)
+    }, function (answers) {
+      this.lodash.extend(this.answers, answers);
+
+      if (answers.whichBump === 'minor') {
+        this.config.set(
+          'currentVersion', this.bumpMinorVersion(currentVersion)
+        );
+      } else if (answers.whichBump === 'major') {
+        this.config.set(
+          'currentVersion', this.bumpMajorVersion(currentVersion)
+        );
+      }
+
+      done();
+    }.bind(this));
+  },
+
+  writing: function () {
+    var apiModule = this.getApiModuleName();
+
+    this.fs.copyTpl(
+      this.templatePath('api_init.py'),
+      this.destinationPath(path.join('app', apiModule, '__init__.py')),
+      { apiModule: apiModule }
+    );
+  },
+
+  end: function () {
+    var apiModule = this.getApiModuleName();
+    var apiUrl = this.getApiUrlName();
+
+    this.log(chalk.green('All set!'));
+    this.log(chalk.cyan(
+      'Be sure to register your shiny new API blueprint in your app ' +
+        'package\'s __init__.py, like this:'
+    ));
+    this.log(chalk.bold(
+      'from .' + apiModule + ' import api as ' + apiModule + '_blueprint\n' +
+        'app.register_blueprint(' + apiModule + '_blueprint, ' +
+        'url_prefix=\'' + apiUrl +'\')'
+    ));
+  }
+});
