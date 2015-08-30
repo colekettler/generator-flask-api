@@ -4,7 +4,7 @@ var path = require('path');
 var assert = require('yeoman-generator').assert;
 var helpers = require('yeoman-generator').test;
 
-describe('flask api:endpoint without methods', function () {
+describe('endpoint without methods', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/endpoint'))
       .withArguments('beartato')
@@ -22,7 +22,7 @@ describe('flask api:endpoint without methods', function () {
   });
 });
 
-describe('flask api:endpoint with methods', function () {
+describe('endpoint with methods', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/endpoint'))
       .withArguments('reginald')
@@ -73,7 +73,7 @@ describe('flask api:endpoint with methods', function () {
   });
 });
 
-describe('flask api:endpoint as part of resource', function () {
+describe('endpoint as part of resource', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/endpoint'))
       .withArguments('beartato')

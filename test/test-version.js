@@ -4,14 +4,14 @@ var path = require('path');
 var assert = require('yeoman-generator').assert;
 var helpers = require('yeoman-generator').test;
 
-describe('flask api:version major', function () {
+describe('version major', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/version'))
       .withOptions({ skipInstall: true })
       .on('ready', function (generator) {
+        this.generator = generator;
         generator.config.set('versioningScheme', 'major');
         generator.config.set('currentVersion', 'v1');
-        this.generator = generator;
       }.bind(this))
       .on('end', done);
   });
@@ -25,14 +25,14 @@ describe('flask api:version major', function () {
   });
 });
 
-describe('flask api:version minor with minor bump', function () {
+describe('version minor with minor bump', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/version'))
       .withOptions({ skipInstall: true })
       .on('ready', function (generator) {
+        this.generator = generator;
         generator.config.set('versioningScheme', 'minor');
         generator.config.set('currentVersion', 'v1.0');
-        this.generator = generator;
       }.bind(this))
       .on('end', done);
   });
@@ -46,15 +46,15 @@ describe('flask api:version minor with minor bump', function () {
   });
 });
 
-describe('flask api:version minor with major bump', function () {
+describe('version minor with major bump', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/version'))
       .withOptions({ skipInstall: true })
       .withPrompts({ whichBump: 'major' })
       .on('ready', function (generator) {
+        this.generator = generator;
         generator.config.set('versioningScheme', 'minor');
         generator.config.set('currentVersion', 'v1.0');
-        this.generator = generator;
       }.bind(this))
       .on('end', done);
   });

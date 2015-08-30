@@ -4,7 +4,9 @@ var path = require('path');
 var helpers = require('yeoman-generator').test;
 var sinon = require('sinon');
 
-describe('flask api:resource', function () {
+describe('resource', function () {
+  var sandbox;
+
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/resource'))
       .withGenerators([
@@ -17,13 +19,14 @@ describe('flask api:resource', function () {
       .withPrompts({ withRoutes: [] })
       .on('ready', function (generator) {
         this.generator = generator;
-        sinon.spy(this.generator, 'composeWith');
+        sandbox = sinon.sandbox.create();
+        sandbox.spy(this.generator, 'composeWith');
       }.bind(this))
       .on('end', done);
   });
 
   after(function () {
-    this.generator.composeWith.restore();
+    sandbox.restore();
   });
 
   it('composes with subgenerators', function () {

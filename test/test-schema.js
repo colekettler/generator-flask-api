@@ -4,7 +4,7 @@ var path = require('path');
 var assert = require('yeoman-generator').assert;
 var helpers = require('yeoman-generator').test;
 
-describe('flask api:schema', function () {
+describe('schema', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/schema'))
       .withArguments('beartato')
@@ -23,7 +23,7 @@ describe('flask api:schema', function () {
   });
 });
 
-describe('flask api:schema as part of resource', function () {
+describe('schema as part of resource', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/schema'))
       .withArguments('beartato')

@@ -3,12 +3,15 @@
 var path = require('path');
 var chalk = require('chalk');
 var yosay = require('yosay');
-var AllYourBase = require('../AllYourBase');
+var AllYourBase = require('../base/AllYourBase');
+var filters = require('../utils/filters');
+var python = require('../utils/python');
+var validators = require('../utils/validators');
 
 module.exports = AllYourBase.extend({
   initializing: {
     checkPython: function () {
-      this.whichPython(function (err, stdout) {
+      python.whichPython(function (err, stdout) {
         this.pythonPath = stdout.toString();
 
         if (this.pythonPath.length === 0) {
@@ -21,7 +24,7 @@ module.exports = AllYourBase.extend({
     },
 
     checkPip: function () {
-      this.whichPip(function (err, stdout) {
+      python.whichPip(function (err, stdout) {
         this.pipPath = stdout.toString();
 
         if (!this.options['skip-install'] && this.pipPath.length === 0) {
@@ -35,7 +38,7 @@ module.exports = AllYourBase.extend({
     },
 
     checkVirtualEnv: function () {
-      this.hasActiveVirtualEnv = this.inVirtualEnv();
+      this.hasActiveVirtualEnv = python.inVirtualEnv();
     },
 
     setConfigDefaults: function () {
@@ -126,8 +129,8 @@ module.exports = AllYourBase.extend({
         message: 'Which URL prefix do you want to use for your API ' +
           'endpoints?',
         default: '/api',
-        validate: this.validateUrlPrefix.bind(this),
-        filter: this.filterUrlPrefix.bind(this),
+        validate: validators.validateUrlPrefix,
+        filter: filters.filterUrlPrefix,
         when: function (answers) {
           return answers.useUrlPrefix;
         }
@@ -150,7 +153,7 @@ module.exports = AllYourBase.extend({
           'It would appear that you\'re already in a Python virtual ' +
             'environment. Fantastic! I\'ll link that up for you.'
         ));
-        this.linkActiveVirtualEnv('.', function () {
+        python.linkActiveVirtualEnv('.', function () {
           this.log(chalk.cyan('Symlinked virtual environment into ./venv'));
         }.bind(this));
       }
@@ -229,13 +232,13 @@ module.exports = AllYourBase.extend({
 
   install: function () {
     if (!this.options['skip-install']) {
-      this.pipInstall('marshmallow', '--pre');
-      this.pipInstall('flask-marshmallow');
-      this.pipInstall(['flask-sqlalchemy', 'marshmallow-sqlalchemy']);
+      python.pipInstall('marshmallow', '--pre');
+      python.pipInstall('flask-marshmallow');
+      python.pipInstall(['flask-sqlalchemy', 'marshmallow-sqlalchemy']);
 
       this.fs.write(
         this.destinationPath('requirements.txt'),
-        this.pipFreeze()
+        python.pipFreeze()
       );
     }
   }

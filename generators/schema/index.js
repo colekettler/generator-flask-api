@@ -2,7 +2,7 @@
 
 var path = require('path');
 var chalk = require('chalk');
-var AllYourBase = require('../AllYourBase');
+var AllYourBase = require('../base/AllYourBase');
 
 module.exports = AllYourBase.extend({
   initializing: function () {

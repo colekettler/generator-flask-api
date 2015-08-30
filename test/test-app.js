@@ -4,42 +4,44 @@ var path = require('path');
 var assert = require('yeoman-generator').assert;
 var helpers = require('yeoman-generator').test;
 var sinon = require('sinon');
+var python = require('../generators/utils/python');
 
-describe('flask api:app', function () {
+// Global hooks
+var sandbox;
+
+before(function () {
+  sandbox = sinon.sandbox.create();
+});
+
+describe('app', function () {
   var mocks = {};
-  var stubs = {};
 
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
       .withPrompts({ versioningScheme: 'none' })
-      .on('ready', function (generator) {
-        mocks.whichPythonMock = sinon.mock(generator)
+      .on('ready', function () {
+        mocks.pythonMock = sandbox.mock(python);
+        mocks.pythonMock
           .expects('whichPython')
           .once()
           .callsArgWithAsync(0, null, '~/.venv/venv/bin/python');
-
-        mocks.whichPipMock = sinon.mock(generator)
+        mocks.pythonMock
           .expects('whichPip')
           .once()
           .callsArgWithAsync(0, null, '~/.venv/venv/bin/pip');
-
-        mocks.inVirtualEnvMock = sinon.mock(generator)
+        mocks.pythonMock
           .expects('inVirtualEnv')
           .atLeast(1)
           .returns(true);
 
-        stubs.linkActiveVirtualEnvStub = sinon.stub(
-          generator, 'linkActiveVirtualEnv'
-        );
+        sandbox.stub(python, 'linkActiveVirtualEnv');
       })
       .on('end', done);
   });
 
   after(function () {
-    for (var stub in stubs) {
-      stubs[stub].restore();
-    }
+    sandbox.restore();
   });
 
   it('creates expected files', function () {
@@ -77,9 +79,7 @@ describe('flask api:app', function () {
   });
 
   it('checks for python, pip, and active virtualenv', function () {
-    mocks.whichPythonMock.verify();
-    mocks.whichPipMock.verify();
-    mocks.inVirtualEnvMock.verify();
+    mocks.pythonMock.verify();
   });
 
   it('sets base configs', function () {
@@ -113,75 +113,68 @@ describe('flask api:app', function () {
   });
 });
 
-describe('flask api:app with virtualenv', function () {
+describe('app with virtualenv', function () {
   var mocks = {};
-  var stubs = {};
 
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
       .withPrompts({ versioningScheme: 'none' })
-      .on('ready', function (generator) {
-        mocks.linkActiveVirtualEnvMock = sinon.mock(generator)
+      .on('ready', function () {
+        mocks.pythonMock = sandbox.mock(python);
+        mocks.pythonMock
           .expects('linkActiveVirtualEnv')
           .withArgs('.')
           .once()
           .callsArgAsync(1);
 
-        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
-        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
-        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
-          .returns(true);
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(true);
       })
       .on('end', done);
   });
 
   after(function () {
-    for (var stub in stubs) {
-      stubs[stub].restore();
-    }
+    sandbox.restore();
   });
 
   it('creates a symlink to a python virtual environment', function () {
-    mocks.linkActiveVirtualEnvMock.verify();
+    mocks.pythonMock.verify();
   });
 });
 
-describe('flask api:app without virtualenv', function () {
+describe('app without virtualenv', function () {
   var mocks = {};
-  var stubs = {};
 
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
       .withPrompts({ versioningScheme: 'none' })
-      .on('ready', function (generator) {
-        mocks.linkActiveVirtualEnvMock = sinon.mock(generator)
+      .on('ready', function () {
+        mocks.pythonMock = sandbox.mock(python);
+        mocks.pythonMock
           .expects('linkActiveVirtualEnv')
           .never();
 
-        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
-        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
-        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
-          .returns(false);
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(false);
       })
       .on('end', done);
   });
 
   after(function () {
-    for (var stub in stubs) {
-      stubs[stub].restore();
-    }
+    sandbox.restore();
   });
 
   it('does not create a symlink to a python virtual environment', function () {
-    mocks.linkActiveVirtualEnvMock.verify();
+    mocks.pythonMock.verify();
   });
 });
 
-describe('flask api:app does not use system python', function () {
+describe('app without using system python', function () {
   var mocks = {};
-  var stubs = {};
 
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
@@ -191,25 +184,21 @@ describe('flask api:app does not use system python', function () {
         versioningScheme: 'none'
       })
       .on('ready', function (generator) {
-        mocks.abortMock = sinon.mock(generator)
+        mocks.abortMock = sandbox.mock(generator)
           .expects('abort')
           .once();
 
-        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
-        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
-        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
-          .returns(false);
-        stubs.pipInstallStub = sinon.stub(generator, 'pipInstall');
-        stubs.pipFreezeStub = sinon.stub(generator, 'pipFreeze')
-          .returns('');
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(false);
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
       })
       .on('end', done);
   });
 
   after(function () {
-    for (var stub in stubs) {
-      stubs[stub].restore();
-    }
+    sandbox.restore();
   });
 
   it('aborts the installation', function () {
@@ -217,7 +206,7 @@ describe('flask api:app does not use system python', function () {
   });
 });
 
-describe('flask api:app no python', function () {
+describe('app without python', function () {
   var stubs = {};
 
   before(function (done) {
@@ -225,23 +214,19 @@ describe('flask api:app no python', function () {
       .withOptions({ skipInstall: false })
       .withPrompts({ versioningScheme: 'none' })
       .on('ready', function (generator) {
-        stubs.abortStub = sinon.stub(generator, 'abort');
-        stubs.whichPythonStub = sinon.stub(generator, 'whichPython')
-          .callsArgWithAsync(0, null, '');
-        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
-        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
-          .returns(false);
-        stubs.pipInstallStub = sinon.stub(generator, 'pipInstall');
-        stubs.pipFreezeStub = sinon.stub(generator, 'pipFreeze')
-          .returns('');
+        stubs.abortStub = sandbox.stub(generator, 'abort');
+
+        sandbox.stub(python, 'whichPython').callsArgWithAsync(0, null, '');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(false);
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
       })
       .on('end', done);
   });
 
   after(function () {
-    for (var stub in stubs) {
-      stubs[stub].restore();
-    }
+    sandbox.restore();
   });
 
   it('aborts the installation', function () {
@@ -249,7 +234,7 @@ describe('flask api:app no python', function () {
   });
 });
 
-describe('flask api:app no pip', function () {
+describe('app without pip', function () {
   var stubs = {};
 
   before(function (done) {
@@ -257,23 +242,19 @@ describe('flask api:app no pip', function () {
       .withOptions({ skipInstall: false })
       .withPrompts({ versioningScheme: 'none' })
       .on('ready', function (generator) {
-        stubs.abortStub = sinon.stub(generator, 'abort');
-        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
-        stubs.whichPipStub = sinon.stub(generator, 'whichPip')
-          .callsArgWithAsync(0, null, '');
-        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
-          .returns(false);
-        stubs.pipInstallStub = sinon.stub(generator, 'pipInstall');
-        stubs.pipFreezeStub = sinon.stub(generator, 'pipFreeze')
-          .returns('');
+        stubs.abortStub = sandbox.stub(generator, 'abort');
+
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip').callsArgWithAsync(0, null, '');
+        sandbox.stub(python, 'inVirtualEnv').returns(false);
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
       })
       .on('end', done);
   });
 
   after(function () {
-    for (var stub in stubs) {
-      stubs[stub].restore();
-    }
+    sandbox.restore();
   });
 
   it('aborts the installation', function () {
@@ -281,32 +262,24 @@ describe('flask api:app no pip', function () {
   });
 });
 
-describe('flask api:app major versioning', function () {
-  var stubs = {};
-
+describe('app with major versioning', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
       .withPrompts({ versioningScheme: 'major' })
-      .on('ready', function (generator) {
-        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
-        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
-        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
-          .returns(true);
-        stubs.linkActiveVirtualEnvStub = sinon.stub(
-          generator, 'linkActiveVirtualEnv'
-        );
-        stubs.pipInstallStub = sinon.stub(generator, 'pipInstall');
-        stubs.pipFreezeStub = sinon.stub(generator, 'pipFreeze')
-          .returns('');
+      .on('ready', function () {
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(true);
+        sandbox.stub(python, 'linkActiveVirtualEnv');
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
       })
       .on('end', done);
   });
 
   after(function () {
-    for (var stub in stubs) {
-      stubs[stub].restore();
-    }
+    sandbox.restore();
   });
 
   it('creates expected package structure', function () {
@@ -325,32 +298,24 @@ describe('flask api:app major versioning', function () {
 });
 
 
-describe('flask api:app minor versioning', function () {
-  var stubs = {};
-
+describe('app with minor versioning', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
       .withPrompts({ versioningScheme: 'minor' })
-      .on('ready', function (generator) {
-        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
-        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
-        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
-          .returns(true);
-        stubs.linkActiveVirtualEnvStub = sinon.stub(
-          generator, 'linkActiveVirtualEnv'
-        );
-        stubs.pipInstallStub = sinon.stub(generator, 'pipInstall');
-        stubs.pipFreezeStub = sinon.stub(generator, 'pipFreeze')
-          .returns('');
+      .on('ready', function () {
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(true);
+        sandbox.stub(python, 'linkActiveVirtualEnv');
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
       })
       .on('end', done);
   });
 
   after(function () {
-    for (var stub in stubs) {
-      stubs[stub].restore();
-    }
+    sandbox.restore();
   });
 
   it('creates expected package structure', function () {
@@ -368,25 +333,24 @@ describe('flask api:app minor versioning', function () {
   });
 });
 
-describe('flask api:app custom url prefix', function () {
+describe('app with custom url prefix', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
       .withPrompts({ urlPrefix: '/aye/pee/eye' })
-      .on('ready', function (generator) {
-        this.sandbox = sinon.sandbox.create();
-        this.sandbox.stub(generator, 'whichPython');
-        this.sandbox.stub(generator, 'whichPip');
-        this.sandbox.stub(generator, 'inVirtualEnv').returns(true);
-        this.sandbox.stub(generator, 'linkActiveVirtualEnv');
-        this.sandbox.stub(generator, 'pipInstall');
-        this.sandbox.stub(generator, 'pipFreeze').returns('');
-      }.bind(this))
+      .on('ready', function () {
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(true);
+        sandbox.stub(python, 'linkActiveVirtualEnv');
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
+      })
       .on('end', done);
   });
 
   after(function () {
-    this.sandbox.restore();
+    sandbox.restore();
   });
 
   it('correctly sets the url prefix', function () {
@@ -396,25 +360,24 @@ describe('flask api:app custom url prefix', function () {
   });
 });
 
-describe('flask api:app no url prefix', function () {
+describe('app without url prefix', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: true })
       .withPrompts({ useUrlPrefix: false })
-      .on('ready', function (generator) {
-        this.sandbox = sinon.sandbox.create();
-        this.sandbox.stub(generator, 'whichPython');
-        this.sandbox.stub(generator, 'whichPip');
-        this.sandbox.stub(generator, 'inVirtualEnv').returns(true);
-        this.sandbox.stub(generator, 'linkActiveVirtualEnv');
-        this.sandbox.stub(generator, 'pipInstall');
-        this.sandbox.stub(generator, 'pipFreeze').returns('');
-      }.bind(this))
+      .on('ready', function () {
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(true);
+        sandbox.stub(python, 'linkActiveVirtualEnv');
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
+      })
       .on('end', done);
   });
 
   after(function () {
-    this.sandbox.restore();
+    sandbox.restore();
   });
 
   it('correctly sets the url prefix', function () {
@@ -424,41 +387,40 @@ describe('flask api:app no url prefix', function () {
   });
 });
 
-describe('flask api:app install', function () {
+describe('app with install', function () {
   var mocks = {};
-  var stubs = {};
 
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: false })
       .withPrompts({ versioningScheme: 'none' })
-      .on('ready', function (generator) {
-        mocks.pipInstallMock = sinon.mock(generator)
+      .on('ready', function () {
+        mocks.pythonMock = sandbox.mock(python);
+        mocks.pythonMock
           .expects('pipInstall')
           .atLeast(2);
-
-        mocks.pipFreezeMock = sinon.mock(generator)
+        mocks.pythonMock
           .expects('pipFreeze')
           .once()
           .returns('Flask\n');
 
-        stubs.whichPythonStub = sinon.stub(generator, 'whichPython');
-        stubs.whichPipStub = sinon.stub(generator, 'whichPip');
-        stubs.inVirtualEnvStub = sinon.stub(generator, 'inVirtualEnv')
-          .returns(true);
-        stubs.linkActiveVirtualEnvStub = sinon.stub(
-          generator, 'linkActiveVirtualEnv'
-        );
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(true);
+        sandbox.stub(python, 'linkActiveVirtualEnv');
       })
       .on('end', done);
   });
 
-  it('installs dependencies with pip', function () {
-    mocks.pipInstallMock.verify();
+  after(function () {
+    sandbox.restore();
+  });
+
+  it('installs and outputs dependencies', function () {
+    mocks.pythonMock.verify();
   });
 
   it('creates a requirements file', function () {
-    mocks.pipFreezeMock.verify();
     assert.fileContent('requirements.txt', /Flask/);
   });
 });

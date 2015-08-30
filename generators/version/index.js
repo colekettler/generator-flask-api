@@ -2,7 +2,8 @@
 
 var path = require('path');
 var chalk = require('chalk');
-var AllYourBase = require('../AllYourBase');
+var AllYourBase = require('../base/AllYourBase');
+var versions = require('../utils/versions');
 
 module.exports = AllYourBase.extend({
   initializing: function () {
@@ -10,7 +11,7 @@ module.exports = AllYourBase.extend({
     var currentVersion = this.config.get('currentVersion');
 
     if (versioningScheme === 'major') {
-      this.config.set('currentVersion', this.bumpMajorVersion(currentVersion));
+      this.config.set('currentVersion', versions.bumpMajor(currentVersion));
     }
   },
 
@@ -26,11 +27,11 @@ module.exports = AllYourBase.extend({
       choices: function () {
         return [{
           name: 'minor: ' + currentVersion + ' -> ' +
-            this.bumpMinorVersion(currentVersion),
+            versions.bumpMinor(currentVersion),
           value: 'minor'
         }, {
           name: 'major: ' + currentVersion + ' -> ' +
-            this.bumpMajorVersion(currentVersion),
+            versions.bumpMajor(currentVersion),
           value: 'major'
         }];
       }.bind(this),
@@ -43,11 +44,11 @@ module.exports = AllYourBase.extend({
 
       if (answers.whichBump === 'minor') {
         this.config.set(
-          'currentVersion', this.bumpMinorVersion(currentVersion)
+          'currentVersion', versions.bumpMinor(currentVersion)
         );
       } else if (answers.whichBump === 'major') {
         this.config.set(
-          'currentVersion', this.bumpMajorVersion(currentVersion)
+          'currentVersion', versions.bumpMajor(currentVersion)
         );
       }
 
