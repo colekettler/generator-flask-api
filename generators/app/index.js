@@ -208,7 +208,10 @@ module.exports = AllYourBase.extend({
       this.fs.copyTpl(
         this.templatePath('run.py'),
         this.destinationPath('run.py'),
-        { appName: this.appName }
+        {
+          appName: this.appName,
+          appEnvVar: this.appName.toUpperCase()
+        }
       );
     },
 
@@ -266,6 +269,19 @@ module.exports = AllYourBase.extend({
   },
 
   end: function () {
+    var appConfigEnvVar = this.appName.toUpperCase() + '_API_CONFIG';
+
     this.log(chalk.green('All set!'));
+    this.log(chalk.cyan(
+      'You can run Flask\'s local server by executing the run script:'
+    ));
+    this.log(chalk.bold('./run.py'));
+    this.log(chalk.cyan(
+      'For safety\'s sake, this defaults to a production config with DEBUG ' +
+        'turned off.\nYou can change the config by setting the ' +
+        appConfigEnvVar + '\nenvironment variable to "development" in your ' +
+        'shell:'
+    ));
+    this.log(chalk.bold('export ' + appConfigEnvVar + '=development'));
   }
 });

@@ -146,6 +146,10 @@ describe('app with name', function () {
   it('correctly references the app directory in the run script', function () {
     assert.fileContent('run.py', /from karate import/);
   });
+
+  it('namespaces the app config environment variable', function () {
+    assert.fileContent('run.py', /os\.getenv\('KARATE_API_CONFIG'/);
+  });
 });
 
 describe('app with virtualenv', function () {
