@@ -164,11 +164,16 @@ describe('utils versions', function () {
       assert.equal(versions.bumpMajor(currentVersion), 'v2.0');
     });
 
+    it('resets the minor version in a minor version string', function () {
+      var currentVersion = 'v1.1';
+      assert.equal(versions.bumpMajor(currentVersion), 'v2.0');
+    });
+
     it('throws an error if given an invalid version string', function () {
       var invalidVersion = 'vA';
       assert.throws(
         versions.bumpMajor.bind(null, invalidVersion),
-        /invalid/i
+        /invalid major/i
       );
     });
   });
@@ -183,20 +188,20 @@ describe('utils versions', function () {
       var invalidVersion = 'v1';
       assert.throws(
         versions.bumpMinor.bind(null, invalidVersion),
-        /invalid/i
+        /invalid minor/i
       );
     });
 
     it('throws an error if given an invalid version string', function () {
-      var invalidMinorVersion = 'v1.A';
+      var invalidMinor = 'v1.A';
       assert.throws(
-        versions.bumpMinor.bind(null, invalidMinorVersion),
-        /invalid/i
+        versions.bumpMinor.bind(null, invalidMinor),
+        /invalid minor/i
       );
-      var invalidMajorVersion = 'vA.1';
+      var invalidMajor = 'vA.1';
       assert.throws(
-        versions.bumpMinor.bind(null, invalidMajorVersion),
-        /invalid/i
+        versions.bumpMinor.bind(null, invalidMajor),
+        /invalid major/i
       );
     });
   });
