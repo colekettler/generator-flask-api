@@ -114,6 +114,8 @@ Creates a URL endpoint, containing the routes for a resource. You get to specify
 yo flask-api:endpoint myendpoint
 ```
 
+Endpoint URLs are automatically pluralized. Or close to it, at any rate. Sorry in advance, wild goose web services.
+
 ### Model
 
 Creates a SQLAlchemy model, containing the data about a resource. You should import it into any associated endpoints or schemas.
