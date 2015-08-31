@@ -9,6 +9,9 @@ describe('schema', function () {
     helpers.run(path.join(__dirname, '../generators/schema'))
       .withArguments('beartato')
       .withOptions({ skipInstall: true })
+      .on('ready', function (generator) {
+        generator.config.set('appName', 'app');
+      })
       .on('end', done);
   });
 
@@ -28,6 +31,9 @@ describe('schema as part of resource', function () {
     helpers.run(path.join(__dirname, '../generators/schema'))
       .withArguments('beartato')
       .withOptions({ skipInstall: true, isGeneratingResource: true})
+      .on('ready', function (generator) {
+        generator.config.set('appName', 'app');
+      })
       .on('end', done);
   });
 

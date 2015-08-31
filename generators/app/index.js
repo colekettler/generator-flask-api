@@ -9,6 +9,17 @@ var python = require('../utils/python');
 var validators = require('../utils/validators');
 
 module.exports = AllYourBase.extend({
+  constructor: function () {
+    AllYourBase.apply(this, arguments);
+
+    this.argument('name', {
+      optional: true,
+      type: String,
+      defaults: 'app',
+      desc: 'Name of the application.'
+    });
+  },
+
   initializing: {
     checkPython: function () {
       python.whichPython(function (err, stdout) {
@@ -41,8 +52,14 @@ module.exports = AllYourBase.extend({
       this.hasActiveVirtualEnv = python.inVirtualEnv();
     },
 
+    setAppName: function () {
+      this.appName = this.lodash.snakeCase(this.name);
+      this.config.set('appName', this.appName);
+    },
+
     setConfigDefaults: function () {
       this.config.defaults({
+        appName: 'app',
         versioningScheme: 'none',
         currentVersion: '',
         urlPrefix: '/api'
@@ -188,16 +205,17 @@ module.exports = AllYourBase.extend({
     },
 
     runnable: function () {
-      this.fs.copy(
+      this.fs.copyTpl(
         this.templatePath('run.py'),
-        this.destinationPath('run.py')
+        this.destinationPath('run.py'),
+        { appName: this.appName }
       );
     },
 
     app: function () {
       this.fs.copyTpl(
         this.templatePath('app_init.py'),
-        this.destinationPath('app/__init__.py'),
+        this.destinationPath(path.join(this.appName, '__init__.py')),
         {
           apiModule: this.templateVars.apiModule,
           apiUrl: this.templateVars.apiUrl
@@ -209,7 +227,7 @@ module.exports = AllYourBase.extend({
       this.fs.copyTpl(
         this.templatePath('api_init.py'),
         this.destinationPath(
-          path.join('app', this.templateVars.apiModule, '__init__.py')
+          path.join(this.appName, this.templateVars.apiModule, '__init__.py')
         ),
         { apiModule: this.templateVars.apiModule }
       );
@@ -218,14 +236,14 @@ module.exports = AllYourBase.extend({
     models: function () {
       this.fs.copy(
         this.templatePath('models_init.py'),
-        this.destinationPath('app/models/__init__.py')
+        this.destinationPath(path.join(this.appName, 'models', '__init__.py'))
       );
     },
 
     schemas: function () {
       this.fs.copy(
         this.templatePath('schemas_init.py'),
-        this.destinationPath('app/schemas/__init__.py')
+        this.destinationPath(path.join(this.appName, 'schemas', '__init__.py'))
       );
     }
   },

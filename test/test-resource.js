@@ -19,6 +19,8 @@ describe('resource', function () {
       .withPrompts({ withRoutes: [] })
       .on('ready', function (generator) {
         this.generator = generator;
+        generator.config.set('appName', 'app');
+
         sandbox = sinon.sandbox.create();
         sandbox.spy(this.generator, 'composeWith');
       }.bind(this))

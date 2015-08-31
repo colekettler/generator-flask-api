@@ -16,6 +16,7 @@ module.exports = AllYourBase.extend({
   },
 
   initializing: function () {
+    this.appName = this.config.get('appName');
     this.name = this.name.toLowerCase();
   },
 
@@ -60,7 +61,7 @@ module.exports = AllYourBase.extend({
     this.fs.copyTpl(
       this.templatePath('endpoint.py'),
       this.destinationPath(
-        path.join('app', 'api', this.lodash.snakeCase(this.name) + '.py')
+        path.join(this.appName, 'api', this.lodash.snakeCase(this.name) + '.py')
       ),
       {
         // Routes

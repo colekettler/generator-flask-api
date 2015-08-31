@@ -10,6 +10,9 @@ describe('endpoint without methods', function () {
       .withArguments('beartato')
       .withOptions({ skipInstall: true })
       .withPrompts({ withRoutes: [] })
+      .on('ready', function (generator) {
+        generator.config.set('appName', 'app');
+      })
       .on('end', done);
   });
 
@@ -29,6 +32,9 @@ describe('endpoint with methods', function () {
       .withOptions({ skipInstall: true, force: true })
       .withPrompts({
         withRoutes: ['getRoute', 'postRoute', 'putRoute', 'deleteRoute']
+      })
+      .on('ready', function (generator) {
+        generator.config.set('appName', 'app');
       })
       .on('end', done);
   });
@@ -79,6 +85,9 @@ describe('endpoint as part of resource', function () {
       .withArguments('beartato')
       .withOptions({ skipInstall: true, isGeneratingResource: true })
       .withPrompts({ withRoutes: [] })
+      .on('ready', function (generator) {
+        generator.config.set('appName', 'app');
+      })
       .on('end', done);
   });
 

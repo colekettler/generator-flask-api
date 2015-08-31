@@ -11,6 +11,7 @@ describe('version major', function () {
       .withOptions({ skipInstall: true })
       .on('ready', function (generator) {
         this.generator = generator;
+        generator.config.set('appName', 'app');
         generator.config.set('versioningScheme', 'major');
         generator.config.set('currentVersion', 'v1');
       }.bind(this))
@@ -32,6 +33,7 @@ describe('version minor with minor bump', function () {
       .withOptions({ skipInstall: true })
       .on('ready', function (generator) {
         this.generator = generator;
+        generator.config.set('appName', 'app');
         generator.config.set('versioningScheme', 'minor');
         generator.config.set('currentVersion', 'v1.0');
       }.bind(this))
@@ -54,6 +56,7 @@ describe('version minor with major bump', function () {
       .withPrompts({ whichBump: 'major' })
       .on('ready', function (generator) {
         this.generator = generator;
+        generator.config.set('appName', 'app');
         generator.config.set('versioningScheme', 'minor');
         generator.config.set('currentVersion', 'v1.0');
       }.bind(this))
@@ -77,16 +80,16 @@ describe('no versioning', function () {
     helpers.run(path.join(__dirname, '../generators/version'))
       .withOptions({ skipInstall: true })
       .on('ready', function (generator) {
-        sandbox = sinon.sandbox.create();
         this.generator = generator;
-
-        mocks.abortMock = sandbox.mock(generator)
-          .expects('abort')
-          .once();
-
+        generator.config.set('appName', 'app');
         generator.config.set('versioningScheme', 'none');
         generator.config.set('currentVersion', '');
         this.originalVersion = '';
+
+        sandbox = sinon.sandbox.create();
+        mocks.abortMock = sandbox.mock(generator)
+          .expects('abort')
+          .once();
       }.bind(this))
       .on('end', done);
   });

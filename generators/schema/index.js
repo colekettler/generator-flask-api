@@ -16,6 +16,7 @@ module.exports = AllYourBase.extend({
   },
 
   initializing: function () {
+    this.appName = this.config.get('appName');
     this.name = this.name.toLowerCase();
   },
 
@@ -23,7 +24,9 @@ module.exports = AllYourBase.extend({
     this.fs.copyTpl(
       this.templatePath('schema.py'),
       this.destinationPath(
-        path.join('app', 'schemas', this.lodash.snakeCase(this.name) + '.py')
+        path.join(
+          this.appName, 'schemas', this.lodash.snakeCase(this.name) + '.py'
+        )
       ),
       {
         modelClass: this.lodash.pascalCase(this.name),

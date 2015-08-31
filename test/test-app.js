@@ -113,6 +113,41 @@ describe('app', function () {
   });
 });
 
+describe('app with name', function () {
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withArguments('karate')
+      .withOptions({ skipInstall: true })
+      .withPrompts({ versioningScheme: 'none' })
+      .on('ready', function () {
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(true);
+        sandbox.stub(python, 'linkActiveVirtualEnv');
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
+      })
+      .on('end', done);
+  });
+
+  after(function () {
+    sandbox.restore();
+  });
+
+  it('creates expected package structure', function () {
+    assert.file([
+      'karate/__init__.py',
+      'karate/api/__init__.py',
+      'karate/models/__init__.py',
+      'karate/schemas/__init__.py'
+    ]);
+  });
+
+  it('correctly references the app directory in the run script', function () {
+    assert.fileContent('run.py', /from karate import/);
+  });
+});
+
 describe('app with virtualenv', function () {
   var mocks = {};
 

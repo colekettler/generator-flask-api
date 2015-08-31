@@ -17,6 +17,8 @@ module.exports = AllYourBase.extend({
       var currentVersion = this.config.get('currentVersion');
       this.config.set('currentVersion', versions.bumpMajor(currentVersion));
     }
+
+    this.appName = this.config.get('appName');
   },
 
   prompting: function () {
@@ -67,7 +69,7 @@ module.exports = AllYourBase.extend({
 
     this.fs.copyTpl(
       this.templatePath('api_init.py'),
-      this.destinationPath(path.join('app', apiModule, '__init__.py')),
+      this.destinationPath(path.join(this.appName, apiModule, '__init__.py')),
       { apiModule: apiModule }
     );
   },
