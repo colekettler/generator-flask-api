@@ -61,7 +61,11 @@ module.exports = AllYourBase.extend({
     this.fs.copyTpl(
       this.templatePath('endpoint.py'),
       this.destinationPath(
-        path.join(this.appName, 'api', this.lodash.snakeCase(this.name) + '.py')
+        path.join(
+          this.appName,
+          this.getApiModuleName(),
+          this.lodash.snakeCase(this.name) + '.py'
+        )
       ),
       {
         // Routes

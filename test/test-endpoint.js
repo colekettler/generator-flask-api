@@ -12,6 +12,8 @@ describe('endpoint without methods', function () {
       .withPrompts({ withRoutes: [] })
       .on('ready', function (generator) {
         generator.config.set('appName', 'app');
+        generator.config.set('versioningScheme', 'none');
+        generator.config.set('currentVersion', '');
       })
       .on('end', done);
   });
@@ -29,12 +31,14 @@ describe('endpoint with methods', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/endpoint'))
       .withArguments('reginald')
-      .withOptions({ skipInstall: true, force: true })
+      .withOptions({ skipInstall: true })
       .withPrompts({
         withRoutes: ['getRoute', 'postRoute', 'putRoute', 'deleteRoute']
       })
       .on('ready', function (generator) {
         generator.config.set('appName', 'app');
+        generator.config.set('versioningScheme', 'none');
+        generator.config.set('currentVersion', '');
       })
       .on('end', done);
   });
@@ -79,6 +83,25 @@ describe('endpoint with methods', function () {
   });
 });
 
+describe('endpoint with versioning', function () {
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/endpoint'))
+      .withArguments('beartato')
+      .withOptions({ skipInstall: true })
+      .withPrompts({ withRoutes: [] })
+      .on('ready', function (generator) {
+        generator.config.set('appName', 'app');
+        generator.config.set('versioningScheme', 'major');
+        generator.config.set('currentVersion', 'v2');
+      })
+      .on('end', done);
+  });
+
+  it('creates expected files', function () {
+    assert.file('app/api_v2/beartato.py');
+  });
+});
+
 describe('endpoint as part of resource', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/endpoint'))
@@ -87,6 +110,8 @@ describe('endpoint as part of resource', function () {
       .withPrompts({ withRoutes: [] })
       .on('ready', function (generator) {
         generator.config.set('appName', 'app');
+        generator.config.set('versioningScheme', 'none');
+        generator.config.set('currentVersion', '');
       })
       .on('end', done);
   });
