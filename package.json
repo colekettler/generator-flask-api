@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "chalk": "^1.0.0",
-    "cross-spawn": "^0.4.0",
+    "cross-spawn": "^2.0.0",
     "encoding": "^0.1.11",
     "i": "^0.3.3",
     "lodash": "^3.10.1",
