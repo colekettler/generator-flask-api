@@ -59,6 +59,8 @@ module.exports = AllYourBase.extend({
   writing: function () {
     var apiModule = this.getApiModuleName();
 
+    this.log(chalk.cyan('Bumping version...'));
+
     this.fs.copyTpl(
       this.templatePath('api_init.py'),
       this.destinationPath(path.join('app', apiModule, '__init__.py')),

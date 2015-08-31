@@ -232,14 +232,22 @@ module.exports = AllYourBase.extend({
 
   install: function () {
     if (!this.options['skip-install']) {
+      this.log(chalk.cyan('Installing dependencies...'));
+
       python.pipInstall('marshmallow', '--pre');
       python.pipInstall('flask-marshmallow');
       python.pipInstall(['flask-sqlalchemy', 'marshmallow-sqlalchemy']);
+
+      this.log(chalk.cyan('Writing requirements file...'));
 
       this.fs.write(
         this.destinationPath('requirements.txt'),
         python.pipFreeze()
       );
     }
+  },
+
+  end: function () {
+    this.log(chalk.green('All set!'));
   }
 });
