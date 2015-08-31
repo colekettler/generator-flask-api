@@ -60,7 +60,8 @@ describe('app', function () {
       'app/__init__.py',
       'app/api/__init__.py',
       'app/models/__init__.py',
-      'app/schemas/__init__.py'
+      'app/schemas/__init__.py',
+      'tests/__init__.py'
     ]);
   });
 

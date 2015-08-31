@@ -248,6 +248,13 @@ module.exports = AllYourBase.extend({
         this.templatePath('schemas_init.py'),
         this.destinationPath(path.join(this.appName, 'schemas', '__init__.py'))
       );
+    },
+
+    tests: function () {
+      this.fs.copy(
+        this.templatePath('tests_init.py'),
+        this.destinationPath(path.join('tests', '__init__.py'))
+      );
     }
   },
 
