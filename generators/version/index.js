@@ -8,9 +8,13 @@ var versions = require('../utils/versions');
 module.exports = AllYourBase.extend({
   initializing: function () {
     var versioningScheme = this.config.get('versioningScheme');
-    var currentVersion = this.config.get('currentVersion');
+
+    if (versioningScheme === 'none') {
+      this.abort('Sorry, I can\'t bump the version of a versionless API!');
+    }
 
     if (versioningScheme === 'major') {
+      var currentVersion = this.config.get('currentVersion');
       this.config.set('currentVersion', versions.bumpMajor(currentVersion));
     }
   },

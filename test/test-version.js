@@ -3,6 +3,7 @@
 var path = require('path');
 var assert = require('yeoman-generator').assert;
 var helpers = require('yeoman-generator').test;
+var sinon = require('sinon');
 
 describe('version major', function () {
   before(function (done) {
@@ -65,5 +66,43 @@ describe('version minor with major bump', function () {
 
   it('bumps the minor version', function () {
     assert.equal(this.generator.config.get('currentVersion'), 'v2.0');
+  });
+});
+
+describe('no versioning', function () {
+  var sandbox;
+  var mocks = {};
+
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/version'))
+      .withOptions({ skipInstall: true })
+      .on('ready', function (generator) {
+        sandbox = sinon.sandbox.create();
+        this.generator = generator;
+
+        mocks.abortMock = sandbox.mock(generator)
+          .expects('abort')
+          .once();
+
+        generator.config.set('versioningScheme', 'none');
+        generator.config.set('currentVersion', '');
+        this.originalVersion = '';
+      }.bind(this))
+      .on('end', done);
+  });
+
+  after(function () {
+    sandbox.restore();
+  });
+
+  it('aborts generation', function () {
+    mocks.abortMock.verify();
+  });
+
+  it('does not bump the version', function () {
+    assert.equal(
+      this.generator.config.get('currentVersion'),
+      this.originalVersion
+    );
   });
 });
