@@ -108,7 +108,7 @@ yo flask-api:resource myresource
 
 ### Endpoint
 
-Creates a URL endpoint, containing the routes for a resource. You should import it into your API blueprint.
+Creates a URL endpoint, containing the routes for a resource. You get to specify what HTTP methods it supports. You should import it into your API blueprint.
 
 ```
 yo flask-api:endpoint myendpoint
@@ -129,6 +129,8 @@ Creates a Marshmallow serialization schema, containing validators and object str
 ```
 yo flask-api:schema myschema
 ```
+
+By default, the schema is generated directly from its corresponding SQLAlchemy model, via [marshmallow-sqlalchemy](http://marshmallow-sqlalchemy.readthedocs.org). You can also define it manually, if you want / need to.
 
 ### Version
 
