@@ -1,7 +1,15 @@
-# generator-flask-api [![Build Status](https://secure.travis-ci.org/ColeKettler/generator-flask-api.png?branch=master)](https://travis-ci.org/ColeKettler/generator-flask-api) [![Coverage Status](https://coveralls.io/repos/ColeKettler/generator-flask-api/badge.svg?branch=master&service=github)](https://coveralls.io/github/ColeKettler/generator-flask-api?branch=master)
+# Flask REST API Generator [![Build Status](https://secure.travis-ci.org/ColeKettler/generator-flask-api.png?branch=master)](https://travis-ci.org/ColeKettler/generator-flask-api) [![Coverage Status](https://coveralls.io/repos/ColeKettler/generator-flask-api/badge.svg?branch=master&service=github)](https://coveralls.io/github/ColeKettler/generator-flask-api?branch=master)
 
-> [Yeoman](http://yeoman.io) generator for RESTful Flask APIs
+> [Yeoman](http://yeoman.io) generator for RESTful [Flask](http://flask.pocoo.org/) APIs, with the goodness of [Marshmallow](http://marshmallow.readthedocs.org) and [SQLAlchemy](http://www.sqlalchemy.org)!
 
+## Contents
+
+* [Getting Started](#getting-started)
+* [Usage](#usage)
+* [Generators](#generators)
+* [Options](#options)
+* [Contributing](#contributing)
+* [License](#license)
 
 ## Getting Started
 
@@ -15,7 +23,7 @@ Basically, he wears a top hat, lives in your computer, and waits for you to tell
 
 Not every new computer comes with a Yeoman pre-installed. He lives in the [npm](https://npmjs.org) package repository. You only have to ask for him once, then he packs up and moves into your hard drive. *Make sure you clean up, he likes new and shiny things.*
 
-```bash
+```
 npm install -g yo
 ```
 
@@ -25,14 +33,14 @@ Yeoman travels light. He didn't pack any generators when he moved in. You can th
 
 To install generator-flask-api from npm, run:
 
-```bash
+```
 npm install -g generator-flask-api
 ```
 
 Finally, initiate the generator:
 
-```bash
-yo flask api
+```
+yo flask-api
 ```
 
 ### Getting To Know Yeoman
@@ -41,7 +49,108 @@ Yeoman has a heart of gold. He's a person with feelings and opinions, but he's v
 
 If you'd like to get to know Yeoman better and meet some of his friends, [Grunt](http://gruntjs.com) and [Bower](http://bower.io), check out the complete [Getting Started Guide](https://github.com/yeoman/yeoman/wiki/Getting-Started).
 
+## Usage
+
+Make a new directory, and `cd` into it:
+
+```
+mkdir my-new-project && cd $_
+```
+
+Run `yo flask-api`:
+
+```
+yo flask-api
+```
+
+Start up Flask's local server:
+
+```
+./run.py
+```
+
+Enjoy! But hurry up and add some tasty [resources](#resource) to consume:
+
+```
+yo flask-api:resource myresource
+```
+
+...and follow the instructions when it's done.
+
+## Generators
+
+Available generators:
+
+* [flask-api](#app)
+* [flask-api:resource](#resource)
+* [flask-api:endpoint](#endpoint)
+* [flask-api:model](#model)
+* [flask-api:schema](#schema)
+* [flask-api:version](#version)
+
+### App
+
+Your starting point. You can pass the application name as an argument, if you want to mix things up.
+
+You'll make exciting choices, like your versioning scheme and URL structure. It'll even install your Python dependencies with Pip - swanky.
+
+```
+yo flask-api pretty-fly-for-an-api
+```
+
+### Resource
+
+A handy way to create an associated [endpoint](#endpoint), [model](#model), and [schema](#schema) all at once.
+
+```
+yo flask-api:resource myresource
+```
+
+### Endpoint
+
+Creates a URL endpoint, containing the routes for a resource. You should import it into your API blueprint.
+
+```
+yo flask-api:endpoint myendpoint
+```
+
+### Model
+
+Creates a SQLAlchemy model, containing the data about a resource. You should import it into any associated endpoints or schemas.
+
+```
+yo flask-api:model mymodel
+```
+
+### Schema
+
+Creates a Marshmallow serialization schema, containing validators and object structure for a model. You should import it into any associated endpoints.
+
+```
+yo flask-api:schema myschema
+```
+
+### Version
+
+Bumps your API's version, creating a new package and blueprint for it. If you're on a major versioning scheme, it'll bump your major version. If you're on a minor versioning scheme, you'll need to specify which version to bump. If you're not using a versioning scheme, you might be confused.
+
+```
+yo flask-api:version
+```
+
+## Options
+
+* `--help` View documentation from the comfort of your terminal.
+* `--skip-install` Skips installing dependencies via `pip` and creating requirements file.
+
+## Contributing
+
+* `grunt` to test and lint, or run `grunt jshint` and `grunt test` (or `grunt test:<generator>`) separately.
+* `grunt cover` to keep that sweet, sweet coverage up.
+* `grunt watch` and `grunt watch:<generator>` is also available.
+
+Open an issue or a PR, test your changes, squash your commits, and we'll talk it out. :)
 
 ## License
 
-MIT
+MIT © 2015 by Cole Kettler
