@@ -4,13 +4,17 @@ var chalk = require('chalk');
 var AllYourBase = require('../base/AllYourBase');
 
 module.exports = AllYourBase.extend({
-  initializing: function () {
+  constructor: function () {
+    AllYourBase.apply(this, arguments);
+
     this.argument('name', {
       required: true,
       type: String,
       desc: 'Name of the resource model, schema, and endpoint.'
     });
+  },
 
+  initializing: function () {
     this.options.isGeneratingResource = true;
   },
 

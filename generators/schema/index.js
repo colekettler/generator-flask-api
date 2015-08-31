@@ -5,12 +5,17 @@ var chalk = require('chalk');
 var AllYourBase = require('../base/AllYourBase');
 
 module.exports = AllYourBase.extend({
-  initializing: function () {
+  constructor: function () {
+    AllYourBase.apply(this, arguments);
+
     this.argument('name', {
       required: true,
       type: String,
       desc: 'Name of the serialization schema.'
     });
+  },
+
+  initializing: function () {
     this.name = this.name.toLowerCase();
   },
 
