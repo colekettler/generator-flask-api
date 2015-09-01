@@ -8,6 +8,7 @@
 * [Usage](#usage)
 * [Generators](#generators)
 * [Options](#options)
+* [Notes](#notes)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -51,10 +52,19 @@ If you'd like to get to know Yeoman better and meet some of his friends, [Grunt]
 
 ## Usage
 
+Create and activate a Python virtual environment if you haven't already:
+
+```
+virtualenv venv
+. venv/bin/activate
+```
+
+(Technically you don't HAVE to, but it's a super good idea.)
+
 Make a new directory, and `cd` into it:
 
 ```
-mkdir my-new-project && cd $_
+mkdir my-cool-api && cd $_
 ```
 
 Run `yo flask-api`:
@@ -146,6 +156,22 @@ yo flask-api:version
 
 * `--help` View documentation from the comfort of your terminal.
 * `--skip-install` Skips installing dependencies via `pip` and creating requirements file.
+
+## Notes
+
+### Python Support
+
+The boilerplate is pretty simple, and all of the default dependencies support Python 2 and 3. It should Just Work™.
+
+### Reverting Versions
+
+If you mess up and accidentally bump a version, don't worry, it's easy to fix:
+
+* Delete the files that the `flask-api:version` subgenerator created.
+* Open up `.yo-rc.json` at your project's root directory.
+* Revert the value of `"currentVersion"` to the previous version and save. Be sure to keep the `v`!
+
+Everything will be back to normal, no problem.
 
 ## Contributing
 
