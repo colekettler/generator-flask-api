@@ -77,8 +77,12 @@ module.exports = AllYourBase.extend({
   end: function () {
     var apiModule = this.getApiModuleName();
     var apiUrl = this.getApiUrlName();
+    var currentVersion = this.config.get('currentVersion');
 
-    this.log(chalk.green('All set!'));
+    this.log(chalk.cyan('Bumped version to ' + currentVersion));
+
+    this.log(chalk.green('\nAll set!\n'));
+
     this.log(chalk.cyan(
       'Be sure to register your shiny new API blueprint in your app ' +
         'package\'s __init__.py, like this:'
@@ -86,7 +90,7 @@ module.exports = AllYourBase.extend({
     this.log(chalk.bold(
       'from .' + apiModule + ' import api as ' + apiModule + '_blueprint\n' +
         'app.register_blueprint(' + apiModule + '_blueprint, ' +
-        'url_prefix=\'' + apiUrl +'\')'
+        'url_prefix=\'' + apiUrl +'\')\n'
     ));
   }
 });

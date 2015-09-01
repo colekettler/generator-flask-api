@@ -34,6 +34,6 @@ module.exports = AllYourBase.extend({
   },
 
   end: function () {
-    this.log(chalk.green('All set!'));
+    this.log(chalk.green('\nAll set!\n'));
   }
 });

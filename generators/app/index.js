@@ -278,17 +278,19 @@ module.exports = AllYourBase.extend({
   end: function () {
     var appConfigEnvVar = this.appName.toUpperCase() + '_API_CONFIG';
 
-    this.log(chalk.green('All set!'));
+    this.log(chalk.green('\nAll set!\n'));
+
     this.log(chalk.cyan(
       'You can run Flask\'s local server by executing the run script:'
     ));
-    this.log(chalk.bold('./run.py'));
+    this.log(chalk.bold('./run.py\n'));
+
     this.log(chalk.cyan(
       'For safety\'s sake, this defaults to a production config with DEBUG ' +
         'turned off.\nYou can change the config by setting the ' +
         appConfigEnvVar + '\nenvironment variable to "development" in your ' +
         'shell:'
     ));
-    this.log(chalk.bold('export ' + appConfigEnvVar + '=development'));
+    this.log(chalk.bold('export ' + appConfigEnvVar + '=development\n'));
   }
 });

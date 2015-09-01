@@ -14,6 +14,7 @@ describe('endpoint without methods', function () {
         generator.config.set('appName', 'app');
         generator.config.set('versioningScheme', 'none');
         generator.config.set('currentVersion', '');
+        generator.config.set('urlPrefix', '/api');
       })
       .on('end', done);
   });
@@ -39,6 +40,7 @@ describe('endpoint with methods', function () {
         generator.config.set('appName', 'app');
         generator.config.set('versioningScheme', 'none');
         generator.config.set('currentVersion', '');
+        generator.config.set('urlPrefix', '/api');
       })
       .on('end', done);
   });
@@ -93,6 +95,7 @@ describe('endpoint with versioning', function () {
         generator.config.set('appName', 'app');
         generator.config.set('versioningScheme', 'major');
         generator.config.set('currentVersion', 'v2');
+        generator.config.set('urlPrefix', '/api');
       })
       .on('end', done);
   });
@@ -112,6 +115,7 @@ describe('endpoint as part of resource', function () {
         generator.config.set('appName', 'app');
         generator.config.set('versioningScheme', 'none');
         generator.config.set('currentVersion', '');
+        generator.config.set('urlPrefix', '/api');
       })
       .on('end', done);
   });

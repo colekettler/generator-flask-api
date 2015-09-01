@@ -25,7 +25,7 @@ var AllYourBase = yeoman.generators.Base.extend({
 
     // Abort installation
     this.abort = function (msg) {
-      this.log(chalk.red(msg));
+      this.log(chalk.red('\n' + msg + '\n'));
       this.env.error(chalk.red('Aborting generation.'));
     };
 

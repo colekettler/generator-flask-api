@@ -42,10 +42,11 @@ module.exports = AllYourBase.extend({
 
   end: function () {
     if (!this.options.isGeneratingResource) {
-      this.log(chalk.green('All set!'));
+      this.log(chalk.green('\nAll set!\n'));
+
       this.log(chalk.cyan(
         'Be sure to import your fancy new schema into any endpoints ' +
-          'that need it.'
+          'that need it.\n'
       ));
     }
   }

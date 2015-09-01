@@ -58,6 +58,11 @@ module.exports = AllYourBase.extend({
   },
 
   writing: function () {
+    this.log(chalk.cyan(
+      'Creating endpoint at ' + this.getApiUrlName() + '/' +
+        this.lodash.urlSlug(this.inflect.pluralize(this.name))
+    ));
+
     this.fs.copyTpl(
       this.templatePath('endpoint.py'),
       this.destinationPath(
@@ -95,14 +100,15 @@ module.exports = AllYourBase.extend({
 
   end: function () {
     if (!this.options.isGeneratingResource) {
-      this.log(chalk.green('All set!'));
+      this.log(chalk.green('\nAll set!\n'));
     }
+
     this.log(chalk.cyan(
       'Be sure to import your fancy new endpoint into your API blueprint in ' +
         'your API package\'s __init__.py, like this:'
     ));
     this.log(chalk.bold(
-      'from . import ' + this.lodash.snakeCase(this.name)
+      'from . import ' + this.lodash.snakeCase(this.name) + '\n'
     ));
   }
 });
