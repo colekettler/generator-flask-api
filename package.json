@@ -25,6 +25,9 @@
     "rest",
     "api"
   ],
+  "engines": {
+    "node": ">=0.10.0"
+  },
   "dependencies": {
     "chalk": "^1.0.0",
     "cross-spawn": "^2.0.0",
