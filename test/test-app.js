@@ -149,7 +149,7 @@ describe('app with name', function () {
   });
 
   it('namespaces the app config environment variable', function () {
-    assert.fileContent('run.py', /os\.getenv\('KARATE_API_CONFIG'/);
+    assert.fileContent('run.py', /os\.getenv\('KARATE_CONFIG'/);
   });
 });
 

@@ -10,17 +10,23 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('API_PRODUCTION_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        '<%= appEnvVar %>_PRODUCTION_DATABASE_URI'
+    )
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('API_DEVELOPMENT_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        '<%= appEnvVar %>_DEVELOPMENT_DATABASE_URI'
+    )
 
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('API_TESTING_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        '<%= appEnvVar %>_TESTING_DATABASE_URI'
+    )
 
 
 config = {
