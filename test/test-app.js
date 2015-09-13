@@ -464,3 +464,32 @@ describe('app with install', function () {
     assert.fileContent('requirements.txt', /Flask/);
   });
 });
+
+describe('app without database or mapper', function () {
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: false })
+      .withPrompts({
+        database: 'none',
+        databaseMapper: 'none',
+        versioningScheme: 'none'
+      })
+      .on('ready', function (generator) {
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(true);
+        sandbox.stub(python, 'linkActiveVirtualEnv');
+      })
+      .on('end', done);
+  });
+
+  after(function () {
+    sandbox.restore();
+  });
+
+  it('creates a requirements file', function () {
+    assert.noFileContent('requirements.txt', /sqlalchemy/);
+  });
+});

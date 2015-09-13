@@ -60,6 +60,8 @@ module.exports = AllYourBase.extend({
     setConfigDefaults: function () {
       this.config.defaults({
         appName: 'app',
+        database: 'none',
+        databaseMapper: 'none',
         versioningScheme: 'none',
         currentVersion: '',
         urlPrefix: '/api'
@@ -96,6 +98,49 @@ module.exports = AllYourBase.extend({
               'to! Try running me again when you have that sorted out.'
           );
         }
+
+        done();
+      }.bind(this));
+    },
+
+    chooseDatabase: function () {
+      var done = this.async();
+
+      this.prompt({
+        type: 'list',
+        name: 'database',
+        message: 'Which flavor of database will you be using with your API?\n' +
+          'Make sure you\'ve got it installed first, of course!',
+        choices: [
+          { name: 'PostgreSQL', value: 'postgresql' },
+          { name: 'None / Other', value: 'none' }
+        ],
+        default: 'postgresql'
+      }, function (answers) {
+        this.lodash.extend(this.answers, answers);
+
+        this.config.set('database', answers.database);
+
+        done();
+      }.bind(this));
+    },
+
+    chooseDatabaseMapper: function () {
+      var done = this.async();
+
+      this.prompt({
+        type: 'list',
+        name: 'databaseMapper',
+        message: 'Which ORM will you be using to interact with your database?',
+        choices: [
+          { name: 'SQLAlchemy', value: 'sqlalchemy' },
+          { name: 'None / Other', value: 'none' }
+        ],
+        default: 'sqlalchemy'
+      }, function (answers) {
+        this.lodash.extend(this.answers, answers);
+
+        this.config.set('databaseMapper', answers.databaseMapper);
 
         done();
       }.bind(this));
@@ -258,13 +303,21 @@ module.exports = AllYourBase.extend({
     }
   },
 
+
   install: function () {
     if (!this.options['skip-install']) {
       this.log(chalk.cyan('Installing dependencies...'));
 
       python.pipInstall('marshmallow', '--pre');
       python.pipInstall('flask-marshmallow');
-      python.pipInstall(['flask-sqlalchemy', 'marshmallow-sqlalchemy']);
+
+      if (this.config.get('database') === 'postgresql') {
+        python.pipInstall('psycopg2');
+      }
+
+      if (this.config.get('databaseMapper') === 'sqlalchemy') {
+        python.pipInstall(['flask-sqlalchemy', 'marshmallow-sqlalchemy']);
+      }
 
       this.log(chalk.cyan('Writing requirements file...'));
 
