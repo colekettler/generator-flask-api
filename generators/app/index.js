@@ -113,6 +113,7 @@ module.exports = AllYourBase.extend({
           'Make sure you\'ve got it installed first, of course!',
         choices: [
           { name: 'PostgreSQL', value: 'postgresql' },
+          { name: 'SQLite', value: 'sqlite' },
           { name: 'None / Other', value: 'none' }
         ],
         default: 'postgresql'
