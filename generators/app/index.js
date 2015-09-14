@@ -248,7 +248,10 @@ module.exports = AllYourBase.extend({
       this.fs.copyTpl(
         this.templatePath('config.py'),
         this.destinationPath('config.py'),
-        { appEnvVar: this.appName.toUpperCase() }
+        {
+          appEnvVar: this.appName.toUpperCase(),
+          databaseMapper: this.config.get('databaseMapper')
+        }
       );
     },
 
