@@ -1,6 +1,6 @@
 {
   "name": "generator-flask-api",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Yeoman generator for RESTful Flask APIs",
   "license": "MIT",
   "main": "app/index.js",
