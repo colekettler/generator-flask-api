@@ -1,4 +1,6 @@
-# Flask REST API Generator [![Build Status](https://secure.travis-ci.org/ColeKettler/generator-flask-api.png?branch=master)](https://travis-ci.org/ColeKettler/generator-flask-api) [![Coverage Status](https://coveralls.io/repos/ColeKettler/generator-flask-api/badge.svg?branch=master&service=github)](https://coveralls.io/github/ColeKettler/generator-flask-api?branch=master)
+# Flask REST API Generator
+
+[![Build Status](https://secure.travis-ci.org/ColeKettler/generator-flask-api.png?branch=master)](https://travis-ci.org/ColeKettler/generator-flask-api) [![Coverage Status](https://coveralls.io/repos/ColeKettler/generator-flask-api/badge.svg?branch=master&service=github)](https://coveralls.io/github/ColeKettler/generator-flask-api?branch=master)
 
 > [Yeoman](http://yeoman.io) generator for RESTful [Flask](http://flask.pocoo.org/) APIs, with the goodness of [Marshmallow](http://marshmallow.readthedocs.org) and [SQLAlchemy](http://www.sqlalchemy.org)!
 
@@ -59,7 +61,7 @@ virtualenv venv
 . venv/bin/activate
 ```
 
-(Technically you don't HAVE to, but it's a super good idea.)
+(Technically you don't **HAVE** to, but it's a super good idea.)
 
 Make a new directory, and `cd` into it:
 
@@ -67,11 +69,22 @@ Make a new directory, and `cd` into it:
 mkdir my-cool-api && cd $_
 ```
 
-Run `yo flask-api`:
+Run `yo flask-api` with your API's name:
 
 ```
-yo flask-api
+yo flask-api my-cool-api
 ```
+
+(It defaults to `app`, if you're feeling uncreative.)
+
+Set some cool environment variables, like your config and database URI:
+
+```
+export MY_COOL_API_CONFIG=development
+export MY_COOL_API_DEVELOPMENT_DATABASE_URI=postgres://localhost/mydb
+```
+
+(Prefixed with your app's name, for your convenience.)
 
 Start up Flask's local server:
 
@@ -102,7 +115,7 @@ Available generators:
 
 Your starting point. You can pass the application name as an argument, if you want to mix things up.
 
-You'll make exciting choices, like your versioning scheme and URL structure. It'll even install your Python dependencies with Pip - swanky.
+You'll make exciting choices, like your database flavor, versioning scheme, and URL structure. It'll even install your Python dependencies with Pip - swanky.
 
 ```
 yo flask-api pretty-fly-for-an-api
@@ -162,6 +175,24 @@ yo flask-api:version
 ### Python Support
 
 The boilerplate is pretty simple, and all of the default dependencies support Python 2 and 3. It should Just Work™.
+
+### MySQL Support
+
+If you decide to go with MySQL, there's a few extra things you should keep in mind.
+
+First off, the official [MySQL Connector/Python](http://dev.mysql.com/doc/connector-python/en/) driver is used. It's actively developed and maintained by Oracle. The commonly used [MySQLdb](https://github.com/farcepest/MySQLdb1) driver does not support Python 3 and does not appear to be actively maintained at this time. There's a fork of MySQLdb called [mysqlclient](https://github.com/PyMySQL/mysqlclient-python) that is actively maintained and supports Python 3; feel free to swap it in.
+
+Second off, if you're using SQLAlchemy, you'll need to specify the driver in the connection string. The syntax is specified [here](http://docs.sqlalchemy.org/en/latest/dialects/mysql.html#module-sqlalchemy.dialects.mysql.mysqlconnector).
+
+Finally, if you're working with MariaDB: the default driver *should* work, but there are no real guarantees against strangeness.
+
+### Working With Another / No Database
+
+I dunno, maybe you're using your own #BigData flavor-of-the-week database, or maybe you're just hardcoding some JSON. Either way, you can easily select `None / Other` as a database option, then import / install everything (or nothing) manually. However, if there's an option you really want supported out of the box, [bug me about it](https://github.com/ColeKettler/generator-flask-api/issues).
+
+### Working With Another / No ORM
+
+You don't **have** to use SQLAlchemy, or any ORM at all. Select `None / Other` as your ORM, and you're good to go. Models will still be generated, will inherit from `object` with an `id` field, and won't assume much else. I'm assuming you want to roll your own abstraction, so I'll do my best to keep out of your way. :P
 
 ### Reverting Versions
 
