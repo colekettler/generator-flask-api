@@ -18,6 +18,7 @@ module.exports = AllYourBase.extend({
   initializing: function () {
     this.appName = this.config.get('appName');
     this.name = this.name.toLowerCase();
+    this.databaseMapper = this.config.get('databaseMapper');
   },
 
   writing: function () {
@@ -29,6 +30,7 @@ module.exports = AllYourBase.extend({
         )
       ),
       {
+        databaseMapper: this.databaseMapper,
         modelClass: this.lodash.pascalCase(this.name),
         modelModule: this.lodash.snakeCase(this.name),
         schemaClass: this.lodash.pascalCase(this.name),

@@ -18,17 +18,27 @@ module.exports = AllYourBase.extend({
   initializing: function () {
     this.appName = this.config.get('appName');
     this.name = this.name.toLowerCase();
+    this.database = this.config.get('database');
+    this.databaseMapper = this.config.get('databaseMapper');
   },
 
   writing: function () {
+    var template;
+    if (this.databaseMapper === 'sqlalchemy') {
+      template = 'sqlalchemy_model.py';
+    } else {
+      template = 'object_model.py';
+    }
+
     this.fs.copyTpl(
-      this.templatePath('model.py'),
-      this.destinationPath(
-        path.join(
-          this.appName, 'models', this.lodash.snakeCase(this.name) + '.py'
-        )
-      ),
-      { modelClass: this.lodash.pascalCase(this.name) }
+      this.templatePath(template),
+      this.destinationPath(path.join(
+        this.appName, 'models', this.lodash.snakeCase(this.name) + '.py'
+      )),
+      {
+        database: this.database,
+        modelClass: this.lodash.pascalCase(this.name)
+      }
     );
   },
 

@@ -18,6 +18,8 @@ module.exports = AllYourBase.extend({
   initializing: function () {
     this.appName = this.config.get('appName');
     this.name = this.name.toLowerCase();
+    this.database = this.config.get('database');
+    this.databaseMapper = this.config.get('databaseMapper');
   },
 
   prompting: function () {
@@ -65,13 +67,11 @@ module.exports = AllYourBase.extend({
 
     this.fs.copyTpl(
       this.templatePath('endpoint.py'),
-      this.destinationPath(
-        path.join(
-          this.appName,
-          this.getApiModuleName(),
-          this.lodash.snakeCase(this.name) + '.py'
-        )
-      ),
+      this.destinationPath(path.join(
+        this.appName,
+        this.getApiModuleName(),
+        this.lodash.snakeCase(this.name) + '.py'
+      )),
       {
         // Routes
         getRoute: this.answers.getRoute,
@@ -79,6 +79,8 @@ module.exports = AllYourBase.extend({
         putRoute: this.answers.putRoute,
         deleteRoute: this.answers.deleteRoute,
         // Values
+        database: this.database,
+        databaseMapper: this.databaseMapper,
         endpointUrl: this.lodash.urlSlug(
           this.inflect.pluralize(this.name)
         ),

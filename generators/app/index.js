@@ -268,7 +268,8 @@ module.exports = AllYourBase.extend({
         this.destinationPath(path.join(this.appName, '__init__.py')),
         {
           apiModule: this.templateVars.apiModule,
-          apiUrl: this.templateVars.apiUrl
+          apiUrl: this.templateVars.apiUrl,
+          databaseMapper: this.config.get('databaseMapper')
         }
       );
     },

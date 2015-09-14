@@ -1,7 +1,17 @@
+<% if (databaseMapper === 'none') { -%>
+<% if (database === 'postgresql') { -%>
+import psycopg2
+<% } else if (database === 'sqlite') { -%>
+import sqlite3
+
+<% } -%>
+<% } -%>
 from flask import jsonify, request
 
 from . import api
+<% if (databaseMapper === 'sqlalchemy') { -%>
 from .. import db
+<% } -%>
 from ..models.<%= modelModule %> import <%= modelClass %>
 from ..schemas.<%= schemaModule %> import <%= schemaVar %>_schema, <%= schemaVarPlural %>_schema
 <% if (getRoute) { -%>
