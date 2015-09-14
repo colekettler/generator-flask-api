@@ -465,7 +465,37 @@ describe('app with install', function () {
   });
 });
 
-describe('app without database or mapper', function () {
+describe('app with install with mysql', function () {
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withOptions({ skipInstall: false })
+      .withPrompts({
+        database: 'mysql',
+        versioningScheme: 'none'
+      })
+      .on('ready', function () {
+        sandbox.stub(python, 'pipInstall');
+        sandbox.stub(python, 'pipFreeze').returns('');
+        sandbox.stub(python, 'whichPython');
+        sandbox.stub(python, 'whichPip');
+        sandbox.stub(python, 'inVirtualEnv').returns(true);
+        sandbox.stub(python, 'linkActiveVirtualEnv');
+      })
+      .on('end', done);
+  });
+
+  after(function () {
+    sandbox.restore();
+  });
+
+  it('creates a requirements file with external source', function () {
+    assert.fileContent(
+      'requirements.txt', /--allow-external mysql-connector-python/
+    );
+  });
+});
+
+describe('app with install without database or mapper', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withOptions({ skipInstall: false })

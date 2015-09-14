@@ -1,5 +1,7 @@
 <% if (database === 'postgresql') { -%>
 import psycopg2
+<% } else if (database === 'mysql') { -%>
+import mysql.connector
 <% } else if (database === 'sqlite') { -%>
 import sqlite3
 <% } -%>

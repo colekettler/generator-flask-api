@@ -113,6 +113,7 @@ module.exports = AllYourBase.extend({
           'Make sure you\'ve got it installed first, of course!',
         choices: [
           { name: 'PostgreSQL', value: 'postgresql' },
+          { name: 'MySQL', value: 'mysql' },
           { name: 'SQLite', value: 'sqlite' },
           { name: 'None / Other', value: 'none' }
         ],
@@ -318,16 +319,25 @@ module.exports = AllYourBase.extend({
         python.pipInstall('psycopg2');
       }
 
+      if (this.config.get('database') === 'mysql') {
+        python.pipInstall(
+          'mysql-connector-python',
+          ['--allow-external', 'mysql-connector-python']
+        );
+      }
+
       if (this.config.get('databaseMapper') === 'sqlalchemy') {
         python.pipInstall(['flask-sqlalchemy', 'marshmallow-sqlalchemy']);
       }
 
       this.log(chalk.cyan('Writing requirements file...'));
 
-      this.fs.write(
-        this.destinationPath('requirements.txt'),
-        python.pipFreeze()
-      );
+      var requirements = python.pipFreeze();
+      if (this.config.get('database') === 'mysql') {
+        requirements = '--allow-external mysql-connector-python\n' +
+          requirements;
+      }
+      this.fs.write(this.destinationPath('requirements.txt'), requirements);
     }
   },
 
