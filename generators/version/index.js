@@ -84,8 +84,8 @@ module.exports = AllYourBase.extend({
     this.log(chalk.green('\nAll set!\n'));
 
     this.log(chalk.cyan(
-      'Be sure to register your shiny new API blueprint in your app ' +
-        'package\'s __init__.py, like this:'
+      'Be sure to register your shiny new API blueprint\n' +
+        'in your app package\'s __init__.py, like this:'
     ));
     this.log(chalk.bold(
       'from .' + apiModule + ' import api as ' + apiModule + '_blueprint\n' +

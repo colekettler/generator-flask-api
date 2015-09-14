@@ -214,7 +214,7 @@ module.exports = AllYourBase.extend({
       if (this.hasActiveVirtualEnv) {
         this.log(chalk.cyan(
           'It would appear that you\'re already in a Python virtual ' +
-            'environment. Fantastic! I\'ll link that up for you.'
+            'environment.\nFantastic! I\'ll link that up for you.'
         ));
         python.linkActiveVirtualEnv('.', function () {
           this.log(chalk.cyan('Symlinked virtual environment into ./venv'));
@@ -332,7 +332,7 @@ module.exports = AllYourBase.extend({
   },
 
   end: function () {
-    var appConfigEnvVar = this.appName.toUpperCase() + '_API_CONFIG';
+    var appConfigEnvVar = this.appName.toUpperCase() + '_CONFIG';
 
     this.log(chalk.green('\nAll set!\n'));
 

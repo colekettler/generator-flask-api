@@ -47,8 +47,8 @@ module.exports = AllYourBase.extend({
       this.log(chalk.green('\nAll set!\n'));
 
       this.log(chalk.cyan(
-        'Be sure to import your fancy new model into any endpoints or ' +
-          'schemas that need it.\n'
+        'Be sure to import your fancy new model into any endpoints\n' +
+          'or schemas that need it.\n'
       ));
     }
   }

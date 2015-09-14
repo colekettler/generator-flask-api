@@ -474,7 +474,7 @@ describe('app without database or mapper', function () {
         databaseMapper: 'none',
         versioningScheme: 'none'
       })
-      .on('ready', function (generator) {
+      .on('ready', function () {
         sandbox.stub(python, 'pipInstall');
         sandbox.stub(python, 'pipFreeze').returns('');
         sandbox.stub(python, 'whichPython');
