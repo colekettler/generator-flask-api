@@ -315,7 +315,6 @@ module.exports = AllYourBase.extend({
     if (!this.options['skip-install']) {
       this.log(chalk.cyan('Installing dependencies...'));
 
-      python.pipInstall('marshmallow', '--pre');
       python.pipInstall('flask-marshmallow');
 
       if (this.config.get('database') === 'postgresql') {
