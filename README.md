@@ -86,10 +86,16 @@ export MY_COOL_API_DEVELOPMENT_DATABASE_URI=postgres://localhost/mydb
 
 (Prefixed with your app's name, for your convenience.)
 
-Start up Flask's local server:
+If you're using SQLAlchemy, start up a Python shell and initialize your database:
 
 ```
-./run.py
+echo 'db.create_all()' | ./manage.py shell
+```
+
+Start up Flask's local development server:
+
+```
+./manage.py runserver
 ```
 
 Enjoy! But hurry up and add some tasty [resources](#resource) to consume:
@@ -171,6 +177,15 @@ yo flask-api:version
 * `--skip-install` Skips installing dependencies via `pip` and creating requirements file.
 
 ## Notes
+
+### Manager Script
+
+[Flask-Script](https://flask-script.readthedocs.org/en/latest/) is used to create an executable Python script to handle common tasks. Out of the box, you can:
+
+* Start up Flask's development server with `./manage.py runserver`.
+* Start a Python shell with a predefined context with `./manage.py shell`. Your created `app` instance will be made available, along with your `db` instance if you're using SQLAlchemy (run `db.create_all()` to initialize your database).
+
+Check out the docs for more info and how to add more commands.
 
 ### Python Support
 

@@ -257,11 +257,12 @@ module.exports = AllYourBase.extend({
 
     runnable: function () {
       this.fs.copyTpl(
-        this.templatePath('run.py'),
-        this.destinationPath('run.py'),
+        this.templatePath('manage.py'),
+        this.destinationPath('manage.py'),
         {
           appName: this.appName,
-          appEnvVar: this.appName.toUpperCase()
+          appEnvVar: this.appName.toUpperCase(),
+          databaseMapper: this.config.get('databaseMapper')
         }
       );
     },
@@ -315,7 +316,7 @@ module.exports = AllYourBase.extend({
     if (!this.options['skip-install']) {
       this.log(chalk.cyan('Installing dependencies...'));
 
-      python.pipInstall('flask-marshmallow');
+      python.pipInstall('flask-marshmallow', 'flask-script');
 
       if (this.config.get('database') === 'postgresql') {
         python.pipInstall('psycopg2');
@@ -349,9 +350,9 @@ module.exports = AllYourBase.extend({
     this.log(chalk.green('\nAll set!\n'));
 
     this.log(chalk.cyan(
-      'You can run Flask\'s local server by executing the run script:'
+      'You can run Flask\'s local server by executing the manager script:'
     ));
-    this.log(chalk.bold('./run.py\n'));
+    this.log(chalk.bold('./manage.py runserver\n'));
 
     this.log(chalk.cyan(
       'For safety\'s sake, this defaults to a production config with DEBUG ' +

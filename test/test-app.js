@@ -51,7 +51,7 @@ describe('app', function () {
       '.editorconfig',
       '.yo-rc.json',
       'config.py',
-      'run.py'
+      'manage.py'
     ]);
   });
 
@@ -74,8 +74,8 @@ describe('app', function () {
 
   it('creates an executable run script', function () {
     assert.fileContent([
-      ['run.py', /app\.run\(\)/],
-      ['run.py', /#! \/usr\/bin\/env python/]
+      ['manage.py', /manager\.run\(\)/],
+      ['manage.py', /#! \/usr\/bin\/env python/]
     ]);
   });
 
@@ -94,7 +94,7 @@ describe('app', function () {
   it('defaults to production config', function () {
     assert.fileContent([
       ['config.py', /'default': ProductionConfig/],
-      ['run.py', /default/]
+      ['manage.py', /default/]
     ]);
   });
 
@@ -145,11 +145,11 @@ describe('app with name', function () {
   });
 
   it('correctly references the app directory in the run script', function () {
-    assert.fileContent('run.py', /from karate import/);
+    assert.fileContent('manage.py', /from karate import/);
   });
 
   it('namespaces the app config environment variable', function () {
-    assert.fileContent('run.py', /os\.getenv\('KARATE_CONFIG'/);
+    assert.fileContent('manage.py', /os\.getenv\('KARATE_CONFIG'/);
   });
 });
 
