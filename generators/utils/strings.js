@@ -6,7 +6,7 @@ var unorm = require('unorm');
 
 function pascalCase (word) {
   var camelCasedWord = _.camelCase(word);
-  return _.capitalize(camelCasedWord);
+  return _.upperFirst(camelCasedWord);
 }
 
 function urlSlug (word) {
