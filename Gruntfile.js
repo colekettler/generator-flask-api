@@ -110,15 +110,6 @@ module.exports = function (grunt) {
           reporter: 'spec'
         }
       }
-    },
-
-    coveralls: {
-      coverage: {
-        src: 'test/coverage/lcov.info'
-      },
-      options: {
-        force: true
-      }
     }
   });
 
@@ -131,7 +122,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-coveralls');
   grunt.loadNpmTasks('grunt-mocha-istanbul');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-newer');
@@ -141,6 +131,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', ['jshint:all', 'test:all']);
   grunt.registerTask('cover', ['clean:coverage', 'mochaIstanbul']);
-  // Travis >> Coveralls
-  grunt.registerTask('ci', ['mochaIstanbul', 'coveralls']);
+  // Travis
+  grunt.registerTask('ci', ['mochaIstanbul']);
 };
