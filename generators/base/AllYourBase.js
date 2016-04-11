@@ -6,9 +6,9 @@ var inflect = require('i')();
 var yeoman = require('yeoman-generator');
 var strings = require('../utils/strings');
 
-var AllYourBase = yeoman.generators.Base.extend({
+var AllYourBase = yeoman.Base.extend({
   constructor: function () {
-    yeoman.generators.Base.apply(this, arguments);
+    yeoman.Base.apply(this, arguments);
 
     // Prompt answers
     this.answers = {};

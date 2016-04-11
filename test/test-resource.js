@@ -1,7 +1,7 @@
 'use strict';
 
 var path = require('path');
-var helpers = require('yeoman-generator').test;
+var helpers = require('yeoman-test');
 var sinon = require('sinon');
 
 describe('resource', function () {
