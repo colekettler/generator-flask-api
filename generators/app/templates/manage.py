@@ -2,7 +2,7 @@
 
 import os
 
-from flask.ext.script import Manager
+from flask_script import Manager
 
 from <%= appName %> import create_app<% if (databaseMapper === 'sqlalchemy') { -%>, db<% } %>
 
