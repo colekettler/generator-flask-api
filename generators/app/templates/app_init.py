@@ -1,7 +1,7 @@
 from flask import Flask
-from flask.ext.marshmallow import Marshmallow
+from flask_marshmallow import Marshmallow
 <% if (databaseMapper === 'sqlalchemy') { -%>
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 <% } -%>
 
 from config import config
